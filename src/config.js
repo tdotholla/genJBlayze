@@ -9,19 +9,19 @@
 // ];
 
 const layersOrder = [
-    { name: 'background', number: 1 },
-    { name: 'face', number: 2 },
-    { name: 'hair', number: 3 },
-    { name: 'moustache', number: 3 },
-    { name: 'eyebrows', number: 3 },
+    { name: 'background', number: 2 },
+    { name: 'face', number: 1 },
+    { name: 'hair', number: 1 },
+    { name: 'moustache', number: 1 },
+    { name: 'eyebrows', number: 1 },
     { name: 'goatee', number: 3 },
-    { name: 'nose', number: 3 },
-    { name: 'eyes', number: 3 },
-    { name: 'teeth', number: 3 },
-    { name: 'pupils', number: 4 },
-    { name: 'lips', number: 4 },
+    { name: 'nose', number: 1 },
+    { name: 'eyes', number: 1 },
+    { name: 'teeth', number: 1 },
+    { name: 'pupils', number: 1 },
+    { name: 'lips', number: 1 },
     { name: 'blunt_body', number: 5 },
-    { name: 'blunt_smoke', number: 6 },
+    { name: 'blunt_smoke', number: 5 },
 ];
   
 // const format = {
@@ -30,8 +30,8 @@ const layersOrder = [
 // };
 
 const format = {
-  width: 10800,
-  height: 14400
+  width: 1080,
+  height: 1440
 }
 
 const rarity = [
