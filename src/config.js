@@ -11,18 +11,18 @@
 const layersOrder = [
     { name: 'nameplate', number: 1 },
     // { name: 'background', number: 2 },
-    { name: 'face', number: 3 },
-    { name: 'hair', number: 4 },
-    { name: 'moustache', number: 5 },
-    { name: 'eyebrows', number: 6 },
-    { name: 'goatee', number: 7 },
-    { name: 'nose', number: 8 },
-    { name: 'eyes', number: 9 },
-    { name: 'teeth', number: 10 },
-    { name: 'pupils', number: 11 },
-    { name: 'lips', number: 12 },
-    { name: 'blunt_body', number: 13 },
-    { name: 'blunt_smoke', number: 14 },
+    { name: 'face', number: 1 },
+    { name: 'hair', number: 1 },
+    { name: 'moustache', number: 1 },
+    { name: 'eyebrows', number: 1 },
+    { name: 'goatee', number: 2 },
+    { name: 'nose', number: 1 },
+    { name: 'eyes', number: 1 },
+    { name: 'teeth', number: 1 },
+    { name: 'pupils', number: 1 },
+    { name: 'lips', number: 1 },
+    { name: 'blunt_body', number: 4 },
+    { name: 'blunt_smoke', number: 4 },
 ];
   
 // const format = {
@@ -31,8 +31,8 @@ const layersOrder = [
 // };
 
 const format = {
-  width: 540,
-  height: 720
+  width: 540,// 10800,
+  height: 720// 14400
 }
 
 const rarity = [
@@ -41,6 +41,6 @@ const rarity = [
     { key: "_sr", val: "super rare" },
 ];
 
-const defaultEdition = 12;
+const defaultEdition = 4;
 
 module.exports = { layersOrder, format, rarity, defaultEdition };
