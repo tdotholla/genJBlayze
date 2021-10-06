@@ -1,25 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
+import * as React from 'react';
 import './App.css';
+import { Box, SimpleGrid, Image, Center } from '@chakra-ui/react';
+
+//get length
+const BASE_PATH = `/gallery/`
+const IMAGES: string[] = new Array(4)
+for (let index = 0; index < IMAGES.length; index++) {
+  IMAGES[index] = `${BASE_PATH}${index + 1}.png`;
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box className="App">
+      <SimpleGrid columns={2}>
+        {IMAGES.map(path => (<Center> <Box height="512" m={33} p={33} border="1px solid red" borderRadius={33} boxShadow="0 0 0.75rem crimson"><Image src={path} maxHeight="100%" /></Box></Center>))}
+      </SimpleGrid>
+    </Box>
   );
 }
 

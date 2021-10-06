@@ -10,7 +10,7 @@ if (!process.env.PWD) {
   process.env.PWD = process.cwd();
 }
 
-const buildDir = `${process.env.PWD}/build`;
+const buildDir = `${process.env.PWD}/app/public/gallery`;
 const metDataFile = '_metadata.json';
 const layersDir = `${process.env.PWD}/layers`;
 
@@ -141,8 +141,8 @@ const createMetaData = () => {
   fs.stat(`${buildDir}/${metDataFile}`, (err) => {
     if(err == null || err.code === 'ENOENT') {
       fs.writeFileSync(`${buildDir}/${metDataFile}`, JSON.stringify(metadata, null, 2));
-        console.log(JSON.stringify(metadata, null, 2))
     } else {
+        console.log(JSON.stringify(metadata, null, 2))
         console.log('Oh no, error: ', err.code);
     }
   });
