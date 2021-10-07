@@ -25,7 +25,7 @@
     "@types/react-dom": "^17.0.0"
   },
   "scripts": {
-    "code-gen": "ts-node gen/generate.ts",
+    "code-gen": "node gen/generate.js",
     "start": "react-scripts start",
     "build": "yarn code-gen && react-scripts build",
     "test": "react-scripts test",
