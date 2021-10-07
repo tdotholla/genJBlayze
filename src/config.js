@@ -13,16 +13,16 @@ const layersOrder = [
     // { name: 'background', number: 2 },
     { name: 'face', number: 1 },
     { name: 'hair', number: 1 },
-    { name: 'moustache', number: 1 },
+    { name: 'moustache', number: 6 },
     { name: 'eyebrows', number: 1 },
-    { name: 'goatee', number: 2 },
+    { name: 'goatee', number: 6 },
     { name: 'nose', number: 1 },
     { name: 'eyes', number: 1 },
     { name: 'teeth', number: 1 },
     { name: 'pupils', number: 1 },
     { name: 'lips', number: 1 },
-    { name: 'blunt_body', number: 4 },
-    { name: 'blunt_smoke', number: 4 },
+    // { name: 'blunt_body', number: 4 },
+    // { name: 'blunt_smoke', number: 4 },
 ];
   
 // const format = {
@@ -41,6 +41,6 @@ const rarity = [
     { key: "_sr", val: "super rare" },
 ];
 
-const defaultEdition = 4;
+const defaultEdition = 10;
 
 module.exports = { layersOrder, format, rarity, defaultEdition };
