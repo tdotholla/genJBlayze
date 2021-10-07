@@ -1,10 +1,10 @@
 import * as React from 'react';
 import './App.css';
 import { Box, SimpleGrid, Image, Center } from '@chakra-ui/react';
-
+import {defaultEdition} from "../gen/config"
 //get length
 const BASE_PATH = `/gallery/`
-const IMAGES: string[] = new Array(4)
+const IMAGES: string[] = new Array(defaultEdition)
 for (let index = 0; index < IMAGES.length; index++) {
   IMAGES[index] = `${BASE_PATH}${index + 1}.png`;
 }
