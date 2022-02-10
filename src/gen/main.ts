@@ -1,7 +1,7 @@
-const fs = require("fs");
-const { createCanvas, loadImage } = require("canvas");
-const console = require("console");
-const { layersOrder, format, rarity } = require("./config.js");
+import * as fs from "fs";
+import { createCanvas, loadImage } from "canvas";
+import console from "console";
+import { layersOrder, format, rarity } from "./config";
 
 const canvas = createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
@@ -10,16 +10,16 @@ if (!process.env.PWD) {
   process.env.PWD = process.cwd();
 }
 
-const buildDir = `${process.env.PWD}/build`;
+const buildDir = `../${process.env.PWD}/build`;
 const metDataFile = '_metadata.json';
 const layersDir = `${process.env.PWD}/layers`;
 
-let metadata = [];
-let attributes = [];
-let hash = [];
-let decodedHash = [];
+let metadata: any[] = [];
+let attributes: any[] = [];
+let hash: any[] = [];
+let decodedHash: any[] = [];
 
-const addRarity = _str => {
+const addRarity = (_str: string) => {
   let itemRarity;
 
   rarity.forEach((r) => {
@@ -31,7 +31,7 @@ const addRarity = _str => {
   return itemRarity;
 };
 
-const cleanName = _str => {
+const cleanName = (_str: string) => {
   let name = _str.slice(0, -4);
   rarity.forEach((r) => {
     name = name.replace(r.key, "");
@@ -39,11 +39,12 @@ const cleanName = _str => {
   return name;
 };
 
-const getElements = path => {
+const getElements = (path: string) => {
   return fs
     .readdirSync(path)
     .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
     .map((i, index) => {
+      console.log(i)
       return {
         id: index + 1,
         name: cleanName(i),
@@ -53,7 +54,7 @@ const getElements = path => {
     });
 };
 
-const layersSetup = layersOrder => {
+const layersSetup = (layersOrder: any[]) => {
   const layers = layersOrder.map((layerObj, index) => ({
     id: index,
     name: layerObj.name,
@@ -74,11 +75,11 @@ const buildSetup = () => {
   fs.mkdirSync(buildDir);
 };
 
-const saveLayer = (_canvas, _edition) => {
+const saveLayer = (_canvas: any, _edition: number) => {
   fs.writeFileSync(`${buildDir}/${_edition}.png`, _canvas.toBuffer("image/png"));
 };
 
-const addMetadata = _edition => {
+const addMetadata = (_edition: number) => {
   let dateTime = Date.now();
   let tempMetadata = {
     hash: hash.join(""),
@@ -93,7 +94,7 @@ const addMetadata = _edition => {
   decodedHash = [];
 };
 
-const addAttributes = (_element, _layer) => {
+const addAttributes = (_element: any, _layer: any) => {
   let tempAttr = {
     id: _element.id,
     layer: _layer.name,
@@ -106,7 +107,7 @@ const addAttributes = (_element, _layer) => {
   decodedHash.push({ [_layer.id]: _element.id });
 };
 
-const drawLayer = async (_layer, _edition) => {
+const drawLayer = async (_layer: any, _edition: number) => {
   const rand = Math.random();
   let element =
     _layer.elements[Math.floor(rand * _layer.number)] ? _layer.elements[Math.floor(rand * _layer.number)] : null;
@@ -125,7 +126,7 @@ const drawLayer = async (_layer, _edition) => {
   }
 };
 
-const createFiles = edition => {
+const createFiles = (edition: number) => {
   const layers = layersSetup(layersOrder);
 
   for (let i = 1; i <= edition; i++) {
@@ -139,13 +140,13 @@ const createFiles = edition => {
 
 const createMetaData = () => {
   fs.stat(`${buildDir}/${metDataFile}`, (err) => {
-    if(err == null || err.code === 'ENOENT') {
+    if (err == null || err.code === 'ENOENT') {
       fs.writeFileSync(`${buildDir}/${metDataFile}`, JSON.stringify(metadata, null, 2));
-        // console.log(JSON.stringify(metadata, null, 2))
+      // console.log(JSON.stringify(metadata, null, 2))
     } else {
-        console.log('Oh no, error: ', err.code);
+      console.log('Oh no, error: ', err.code);
     }
   });
 };
 
-module.exports = { buildSetup, createFiles, createMetaData };
+export { buildSetup, createFiles, createMetaData };
