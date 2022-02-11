@@ -3,7 +3,7 @@ import './App.css';
 
 //get length
 const BASE_PATH = `/gallery/`
-const IMAGES: string[] = new Array(4)
+const IMAGES: string[] = new Array(20)
 for (let index = 0; index < IMAGES.length; index++) {
   IMAGES[index] = `${BASE_PATH}${index + 1}.png`;
 }

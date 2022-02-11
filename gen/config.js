@@ -11,7 +11,7 @@ var layersOrder = [
     { name: 'nameplate', number: 1 },
     // { name: 'background', number: 2 },
     { name: 'face', number: 1 },
-    { name: 'hair', number: 1 },
+    { name: 'hair', number: 10 },
     { name: 'moustache', number: 1 },
     { name: 'eyebrows', number: 1 },
     { name: 'goatee', number: 1 },
@@ -36,5 +36,5 @@ var rarity = [
     { key: "_r", val: "rare" },
     { key: "_sr", val: "super rare" },
 ];
-var defaultEdition = 6;
+var defaultEdition = 20;
 export { layersOrder, format, rarity, defaultEdition };

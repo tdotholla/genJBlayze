@@ -30,6 +30,7 @@
     "gen": "node --experimental-specifier-resolution=node gen/generate.js",
     "start": "react-scripts start",
     "build": "yarn gen && react-scripts build",
+    "runit": "yarn build && yarn start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

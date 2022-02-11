@@ -12,7 +12,7 @@ const layersOrder: ILayersOrder = [
   { name: 'nameplate', number: 1 },
   // { name: 'background', number: 2 },
   { name: 'face', number: 1 },
-  { name: 'hair', number: 6 },
+  { name: 'hair', number: 10 },
   { name: 'moustache', number: 1 },
   { name: 'eyebrows', number: 1 },
   { name: 'goatee', number: 1 },
@@ -43,6 +43,6 @@ const rarity = [
   { key: "_sr", val: "super rare" },
 ];
 
-const defaultEdition = 6;
+const defaultEdition = 10;
 
 export { layersOrder, format, rarity, defaultEdition };
