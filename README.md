@@ -2,15 +2,14 @@
 
 Create generative art by using the canvas api and node js
 
-![](https://github.com/HashLips/generative-art-node/blob/main/src/preview.png)
+![](https://github.com/tdotholla/genBlayze/blob/main/src/preview.png)
+### [Visit](https://jusblayze.kielbyrne.com/)
+![Vercel](https://vercelbadge.vercel.app/api/kielbyrne/gen-blayze?style=for-the-badge)
 
 ## Installation
-
-```
-git clone https://github.com/HashLips/generative-art-node
-
-yarn add all
-```
+generate: `yarn gen`
+`yarn runit`
+_watch out for changes to tsconfig.json and `noEmit: false` changing to true_
 
 ## Usage
 
