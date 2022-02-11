@@ -1,6 +1,5 @@
-import * as React from 'react';
-import './App.css';
 import { Box, SimpleGrid, Image, Center } from '@chakra-ui/react';
+import './App.css';
 
 //get length
 const BASE_PATH = `/gallery/`

@@ -40,7 +40,7 @@ const cleanName = (_str: string) => {
   return name;
 };
 
-const getElements = (path: string) => {
+const getImages = (path: string) => {
   return fs
     .readdirSync(path)
     .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
@@ -59,12 +59,11 @@ const layersSetup = (layersOrder: any[]) => {
     id: index,
     name: layerObj.name,
     location: `${layersDir}/${layerObj.name}/`,
-    elements: getElements(`${layersDir}/${layerObj.name}/`),
+    images: getImages(`${layersDir}/${layerObj.name}/`),
     position: { x: 0, y: 0 },
     size: { width: format.width, height: format.height },
     number: layerObj.number
   }));
-  console.log(layers)
   return layers;
 };
 
@@ -110,7 +109,7 @@ const addAttributes = (_element: any, _layer: any) => {
 const drawLayer = async (_layer: any, _edition: number) => {
   const rand = Math.random();
   let element =
-    _layer.elements[Math.floor(rand * _layer.number)] ? _layer.elements[Math.floor(rand * _layer.number)] : null;
+    _layer.images[Math.floor(rand * _layer.number)] ? _layer.images[Math.floor(rand * _layer.number)] : null;
   if (element) {
     addAttributes(element, _layer);
     const image = await loadImage(`${_layer.location}${element.fileName}`);

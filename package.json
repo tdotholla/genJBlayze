@@ -26,6 +26,7 @@
     "@types/react-dom": "^17.0.0"
   },
   "scripts": {
+    "prebuild": "tsc && eslint --fix ./src",
     "gen": "node --experimental-specifier-resolution=node gen/generate.js",
     "start": "react-scripts start",
     "build": "yarn gen && react-scripts build",

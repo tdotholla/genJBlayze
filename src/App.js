@@ -1,3 +1,6 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { Box, SimpleGrid, Image, Center } from '@chakra-ui/react';
+import './App.css';
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -9,9 +12,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import './App.css';
-import { Box, SimpleGrid, Image, Center } from '@chakra-ui/react';
 //get length
 var BASE_PATH = "/gallery/";
 var IMAGES = new Array(4);

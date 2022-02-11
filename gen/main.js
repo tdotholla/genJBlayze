@@ -35,9 +35,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import * as fs from "fs";
-import { createCanvas, loadImage } from "canvas";
+import canvasPkg from "canvas";
 import console from "console";
 import { layersOrder, format, rarity } from "./config";
+var createCanvas = canvasPkg.createCanvas, loadImage = canvasPkg.loadImage;
 var canvas = createCanvas(format.width, format.height);
 var ctx = canvas.getContext("2d");
 if (!process.env.PWD) {
@@ -66,7 +67,7 @@ var cleanName = function (_str) {
     });
     return name;
 };
-var getElements = function (path) {
+var getImages = function (path) {
     return fs
         .readdirSync(path)
         .filter(function (item) { return !/(^|\/)\.[^\/\.]/g.test(item); })
@@ -84,12 +85,11 @@ var layersSetup = function (layersOrder) {
         id: index,
         name: layerObj.name,
         location: layersDir + "/" + layerObj.name + "/",
-        elements: getElements(layersDir + "/" + layerObj.name + "/"),
+        images: getImages(layersDir + "/" + layerObj.name + "/"),
         position: { x: 0, y: 0 },
         size: { width: format.width, height: format.height },
         number: layerObj.number
     }); });
-    console.log(layers);
     return layers;
 };
 var buildSetup = function () {
@@ -134,7 +134,7 @@ var drawLayer = function (_layer, _edition) { return __awaiter(void 0, void 0, v
         switch (_a.label) {
             case 0:
                 rand = Math.random();
-                element = _layer.elements[Math.floor(rand * _layer.number)] ? _layer.elements[Math.floor(rand * _layer.number)] : null;
+                element = _layer.images[Math.floor(rand * _layer.number)] ? _layer.images[Math.floor(rand * _layer.number)] : null;
                 if (!element) return [3 /*break*/, 2];
                 addAttributes(element, _layer);
                 return [4 /*yield*/, loadImage("" + _layer.location + element.fileName)];

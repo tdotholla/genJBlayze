@@ -14,14 +14,14 @@ var layersOrder = [
     { name: 'hair', number: 1 },
     { name: 'moustache', number: 1 },
     { name: 'eyebrows', number: 1 },
-    { name: 'goatee', number: 2 },
+    { name: 'goatee', number: 1 },
     { name: 'nose', number: 1 },
     { name: 'eyes', number: 1 },
     { name: 'teeth', number: 1 },
     { name: 'pupils', number: 1 },
     { name: 'lips', number: 1 },
-    { name: 'blunt_body', number: 4 },
-    { name: 'blunt_smoke', number: 4 },
+    { name: 'blunt_body', number: 1 },
+    { name: 'blunt_smoke', number: 2 },
 ];
 // const format = {
 //     width: 230,
@@ -36,5 +36,5 @@ var rarity = [
     { key: "_r", val: "rare" },
     { key: "_sr", val: "super rare" },
 ];
-var defaultEdition = 4;
+var defaultEdition = 6;
 export { layersOrder, format, rarity, defaultEdition };
