@@ -12,7 +12,7 @@ const layersOrder: ILayersOrder = [
   { name: 'nameplate', number: 1 },
   // { name: 'background', number: 2 },
   { name: 'face', number: 1 },
-  { name: 'hair', number: 10 },
+  { name: 'hair', number: 7 },
   { name: 'moustache', number: 1 },
   { name: 'eyebrows', number: 1 },
   { name: 'goatee', number: 1 },

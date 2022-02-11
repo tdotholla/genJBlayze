@@ -129,10 +129,10 @@ const drawLayer = async (_layer: any, _edition: number) => {
   }
 };
 
-const createFiles = (edition: number) => {
+const createFiles = (editions: number) => {
   const layers = layersSetup(layersOrder);
 
-  for (let i = 1; i <= edition; i++) {
+  for (let i = 1; i <= editions; i++) {
     layers.forEach((layer) => {
       drawLayer(layer, i);
     });
