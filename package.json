@@ -2,6 +2,7 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@chakra-ui/react": "^1.6.9",
     "@emotion/react": "11",
@@ -25,7 +26,7 @@
     "@types/react-dom": "^17.0.0"
   },
   "scripts": {
-    "code-gen": "tsc && node src/gen/generate.js",
+    "code-gen": "tsc && node --es-module-specifier-resolution=node dist/gen/generate.js",
     "start": "react-scripts start",
     "build": "yarn code-gen && react-scripts build",
     "test": "react-scripts test",

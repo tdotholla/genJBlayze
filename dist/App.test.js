@@ -6,4 +6,3 @@ test.skip('renders learn react link', () => {
     const linkElement = screen.getByText(/learn react/i);
     expect(linkElement).toBeInTheDocument();
 });
-//# sourceMappingURL=App.test.js.map

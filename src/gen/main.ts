@@ -1,9 +1,9 @@
 import * as fs from "fs";
-import { createCanvas, loadImage } from "canvas";
+import * as cv from "canvas";
 import console from "console";
 import { layersOrder, format, rarity } from "./config";
 
-const canvas = createCanvas(format.width, format.height);
+const canvas = cv.createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
 
 if (!process.env.PWD) {
@@ -113,7 +113,7 @@ const drawLayer = async (_layer: any, _edition: number) => {
     _layer.elements[Math.floor(rand * _layer.number)] ? _layer.elements[Math.floor(rand * _layer.number)] : null;
   if (element) {
     addAttributes(element, _layer);
-    const image = await loadImage(`${_layer.location}${element.fileName}`);
+    const image = await cv.loadImage(`${_layer.location}${element.fileName}`);
 
     ctx.drawImage(
       image,

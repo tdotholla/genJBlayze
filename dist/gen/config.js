@@ -1,15 +1,5 @@
-// const layersOrder = [
-//     { name: 'background', number: 1 },
-//     { name: 'shine', number: 1 },
-//     { name: 'ball', number: 2 },
-//     { name: 'iris', number: 3 },
-//     { name: 'bottom lid', number: 3 },
-//     { name: 'top lid', number: 3 },
-//     { name: 'eye color', number: 12 },
-// ];
 const layersOrder = [
     { name: 'nameplate', number: 1 },
-    // { name: 'background', number: 2 },
     { name: 'face', number: 1 },
     { name: 'hair', number: 1 },
     { name: 'moustache', number: 1 },
@@ -23,13 +13,9 @@ const layersOrder = [
     { name: 'blunt_body', number: 4 },
     { name: 'blunt_smoke', number: 4 },
 ];
-// const format = {
-//     width: 230,
-//     height: 230
-// };
 const format = {
     width: 540,
-    height: 720 // 14400
+    height: 720
 };
 const rarity = [
     { key: "", val: "original" },
@@ -38,4 +24,3 @@ const rarity = [
 ];
 const defaultEdition = 4;
 export { layersOrder, format, rarity, defaultEdition };
-//# sourceMappingURL=config.js.map

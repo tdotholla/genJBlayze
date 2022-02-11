@@ -1,17 +1,8 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import * as fs from "fs";
-import { createCanvas, loadImage } from "canvas";
+import * as cv from "canvas";
 import console from "console";
 import { layersOrder, format, rarity } from "./config";
-const canvas = createCanvas(format.width, format.height);
+const canvas = cv.createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
 if (!process.env.PWD) {
     process.env.PWD = process.cwd();
@@ -100,16 +91,16 @@ const addAttributes = (_element, _layer) => {
     hash.push(_element.id);
     decodedHash.push({ [_layer.id]: _element.id });
 };
-const drawLayer = (_layer, _edition) => __awaiter(void 0, void 0, void 0, function* () {
+const drawLayer = async (_layer, _edition) => {
     const rand = Math.random();
     let element = _layer.elements[Math.floor(rand * _layer.number)] ? _layer.elements[Math.floor(rand * _layer.number)] : null;
     if (element) {
         addAttributes(element, _layer);
-        const image = yield loadImage(`${_layer.location}${element.fileName}`);
+        const image = await cv.loadImage(`${_layer.location}${element.fileName}`);
         ctx.drawImage(image, _layer.position.x, _layer.position.y, _layer.size.width, _layer.size.height);
         saveLayer(canvas, _edition);
     }
-});
+};
 const createFiles = (edition) => {
     const layers = layersSetup(layersOrder);
     for (let i = 1; i <= edition; i++) {
@@ -124,7 +115,6 @@ const createMetaData = () => {
     fs.stat(`${buildDir}/${metDataFile}`, (err) => {
         if (err == null || err.code === 'ENOENT') {
             fs.writeFileSync(`${buildDir}/${metDataFile}`, JSON.stringify(metadata, null, 2));
-            // console.log(JSON.stringify(metadata, null, 2))
         }
         else {
             console.log('Oh no, error: ', err.code);
@@ -132,4 +122,3 @@ const createMetaData = () => {
     });
 };
 export { buildSetup, createFiles, createMetaData };
-//# sourceMappingURL=main.js.map
