@@ -69,12 +69,16 @@ const layersSetup = (layersOrder: any[]) => {
 
 const buildSetup = () => {
   if (fs.existsSync(buildDir)) {
+    console.log("CLEARING OUT " + buildDir)
     fs.rmdirSync(buildDir, { recursive: true });
   }
+  console.log("CREATING DIR " + buildDir)
+
   fs.mkdirSync(buildDir);
 };
 
 const saveLayer = (_canvas: any, _edition: number) => {
+  console.log("SAVING LAYER " + _edition + '.PNG')
   fs.writeFileSync(`${buildDir}/${_edition}.png`, _canvas.toBuffer("image/png"));
 };
 
@@ -140,6 +144,7 @@ const createFiles = (edition: number) => {
 const createMetaData = () => {
   fs.stat(`${buildDir}/${metDataFile}`, (err) => {
     if (err == null || err.code === 'ENOENT') {
+      console.log("WRITING METADATA FILE " + metDataFile)
       fs.writeFileSync(`${buildDir}/${metDataFile}`, JSON.stringify(metadata, null, 2));
       // console.log(JSON.stringify(metadata, null, 2))
     } else {
