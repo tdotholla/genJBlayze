@@ -1,11 +1,9 @@
-const myArgs = process.argv.slice(2);
-const { buildSetup, createFiles, createMetaData } = require("./main.js");
-const { defaultEdition } = require("./config.js");
-const edition = myArgs.length > 0 ? Number(myArgs[0]) : defaultEdition;
-
-(() => {
-  buildSetup();
-  createFiles(edition);
-  createMetaData();
+import { defaultEdition } from "./config";
+import { buildSetup, createFiles, createMetaData } from "./main";
+var myArgs = process.argv.slice(2);
+var editions = myArgs.length > 0 ? Number(myArgs[0]) : defaultEdition;
+(function () {
+    buildSetup();
+    createFiles(editions);
+    createMetaData();
 })();
-

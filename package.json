@@ -2,6 +2,7 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@chakra-ui/react": "^1.6.9",
     "@emotion/react": "11",
@@ -25,9 +26,11 @@
     "@types/react-dom": "^17.0.0"
   },
   "scripts": {
-    "code-gen": "node gen/generate.js",
+    "prebuild": "tsc && eslint --fix ./src",
+    "gen": "node --experimental-specifier-resolution=node --max_old_space_size=12288 gen/generate.js",
     "start": "react-scripts start",
-    "build": "yarn code-gen && react-scripts build",
+    "build": "yarn gen && react-scripts build",
+    "runit": "yarn build && yarn start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -7,40 +7,34 @@
 //     { name: 'top lid', number: 3 },
 //     { name: 'eye color', number: 12 },
 // ];
-
-const layersOrder = [
+var layersOrder = [
     { name: 'nameplate', number: 1 },
     // { name: 'background', number: 2 },
     { name: 'face', number: 1 },
-    { name: 'hair', number: 1 },
+    { name: 'hair', number: 7 },
     { name: 'moustache', number: 1 },
     { name: 'eyebrows', number: 1 },
-    { name: 'goatee', number: 2 },
+    { name: 'goatee', number: 1 },
     { name: 'nose', number: 1 },
     { name: 'eyes', number: 1 },
     { name: 'teeth', number: 1 },
     { name: 'pupils', number: 1 },
     { name: 'lips', number: 1 },
-    { name: 'blunt_body', number: 4 },
-    { name: 'blunt_smoke', number: 4 },
+    { name: 'blunt_body', number: 1 },
+    { name: 'blunt_smoke', number: 2 },
 ];
-  
 // const format = {
 //     width: 230,
 //     height: 230
 // };
-
-const format = {
-  width: 540,// 10800,
-  height: 720// 14400
-}
-
-const rarity = [
+var format = {
+    width: 540,
+    height: 720 // 14400
+};
+var rarity = [
     { key: "", val: "original" },
     { key: "_r", val: "rare" },
     { key: "_sr", val: "super rare" },
 ];
-
-const defaultEdition = 4;
-
-module.exports = { layersOrder, format, rarity, defaultEdition };
+var defaultEdition = 10;
+export { layersOrder, format, rarity, defaultEdition };
