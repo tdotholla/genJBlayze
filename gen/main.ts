@@ -78,7 +78,7 @@ const buildSetup = () => {
 };
 
 const saveLayer = (_canvas: any, _edition: number) => {
-  console.log("SAVING LAYER " + _edition + '.PNG')
+  // console.log("SAVING LAYER " + _edition + '.PNG')
   fs.writeFileSync(`${buildDir}/${_edition}.png`, _canvas.toBuffer("image/png"));
 };
 
