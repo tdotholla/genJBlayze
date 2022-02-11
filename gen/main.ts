@@ -1,8 +1,9 @@
 import * as fs from "fs";
-import { createCanvas, loadImage } from "canvas";
+import canvasPkg from "canvas";
 import console from "console";
 import { layersOrder, format, rarity } from "./config";
 
+const { createCanvas, loadImage } = canvasPkg;
 const canvas = createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
 
@@ -63,7 +64,7 @@ const layersSetup = (layersOrder: any[]) => {
     size: { width: format.width, height: format.height },
     number: layerObj.number
   }));
-
+  console.log(layers)
   return layers;
 };
 

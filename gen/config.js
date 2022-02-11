@@ -7,8 +7,7 @@
 //     { name: 'top lid', number: 3 },
 //     { name: 'eye color', number: 12 },
 // ];
-
-const layersOrder = [
+var layersOrder = [
     { name: 'nameplate', number: 1 },
     // { name: 'background', number: 2 },
     { name: 'face', number: 1 },
@@ -24,23 +23,18 @@ const layersOrder = [
     { name: 'blunt_body', number: 4 },
     { name: 'blunt_smoke', number: 4 },
 ];
-  
 // const format = {
 //     width: 230,
 //     height: 230
 // };
-
-const format = {
-  width: 540,// 10800,
-  height: 720// 14400
-}
-
-const rarity = [
+var format = {
+    width: 540,
+    height: 720 // 14400
+};
+var rarity = [
     { key: "", val: "original" },
     { key: "_r", val: "rare" },
     { key: "_sr", val: "super rare" },
 ];
-
-const defaultEdition = 4;
-
-module.exports = { layersOrder, format, rarity, defaultEdition };
+var defaultEdition = 4;
+export { layersOrder, format, rarity, defaultEdition };
