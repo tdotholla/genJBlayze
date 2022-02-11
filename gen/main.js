@@ -101,7 +101,7 @@ var buildSetup = function () {
     fs.mkdirSync(buildDir);
 };
 var saveLayer = function (_canvas, _edition) {
-    console.log("SAVING LAYER " + _edition + '.PNG');
+    // console.log("SAVING LAYER " + _edition + '.PNG')
     fs.writeFileSync(buildDir + "/" + _edition + ".png", _canvas.toBuffer("image/png"));
 };
 var addMetadata = function (_edition) {
@@ -150,7 +150,7 @@ var drawLayer = function (_layer, _edition) { return __awaiter(void 0, void 0, v
         }
     });
 }); };
-var createFiles = function (edition) {
+var createFiles = function (editions) {
     var layers = layersSetup(layersOrder);
     var _loop_1 = function (i) {
         layers.forEach(function (layer) {
@@ -159,7 +159,7 @@ var createFiles = function (edition) {
         addMetadata(i);
         console.log("Creating edition " + i);
     };
-    for (var i = 1; i <= edition; i++) {
+    for (var i = 1; i <= editions; i++) {
         _loop_1(i);
     }
 };
