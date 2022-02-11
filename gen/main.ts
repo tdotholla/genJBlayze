@@ -11,7 +11,7 @@ if (!process.env.PWD) {
   process.env.PWD = process.cwd();
 }
 
-const buildDir = `${process.env.PWD}/build`;
+const buildDir = `${process.env.PWD}/public/gallery`;
 const metDataFile = '_metadata.json';
 const layersDir = `${process.env.PWD}/layers`;
 

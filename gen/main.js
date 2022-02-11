@@ -44,7 +44,7 @@ var ctx = canvas.getContext("2d");
 if (!process.env.PWD) {
     process.env.PWD = process.cwd();
 }
-var buildDir = process.env.PWD + "/build";
+var buildDir = process.env.PWD + "/public/gallery";
 var metDataFile = '_metadata.json';
 var layersDir = process.env.PWD + "/layers";
 var metadata = [];
@@ -94,11 +94,14 @@ var layersSetup = function (layersOrder) {
 };
 var buildSetup = function () {
     if (fs.existsSync(buildDir)) {
+        console.log("CLEARING OUT " + buildDir);
         fs.rmdirSync(buildDir, { recursive: true });
     }
+    console.log("CREATING DIR " + buildDir);
     fs.mkdirSync(buildDir);
 };
 var saveLayer = function (_canvas, _edition) {
+    console.log("SAVING LAYER " + _edition + '.PNG');
     fs.writeFileSync(buildDir + "/" + _edition + ".png", _canvas.toBuffer("image/png"));
 };
 var addMetadata = function (_edition) {
@@ -163,6 +166,7 @@ var createFiles = function (edition) {
 var createMetaData = function () {
     fs.stat(buildDir + "/" + metDataFile, function (err) {
         if (err == null || err.code === 'ENOENT') {
+            console.log("WRITING METADATA FILE " + metDataFile);
             fs.writeFileSync(buildDir + "/" + metDataFile, JSON.stringify(metadata, null, 2));
             // console.log(JSON.stringify(metadata, null, 2))
         }
