@@ -1,7 +1,7 @@
 {
   "label": "tsc: watch",
   "type": "typescript",
-  "tsconfig": "tsconfig-watch.json", //!important
+  "tsconfig": "tsconfig-watch.json",
   "option": "watch",
   "runOptions": {
     "runOn": "folderOpen"
