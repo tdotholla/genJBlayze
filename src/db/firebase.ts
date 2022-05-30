@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app"
-import { getStorage } from "firebase/storage"
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
 import { getAnalytics } from "firebase/analytics"
 
 const firebaseConfig = {
@@ -14,13 +14,15 @@ const firebaseConfig = {
 
 export const appRef = initializeApp(firebaseConfig)
 export const analytics = getAnalytics(appRef)
-export const storageRef = getStorage(appRef)
+export const fbStorage = getStorage(appRef)
+// const storageRef = ref(fbStorage, "/uploads")
 
-export const uploadImage = (image: any) => {
-  if (image == null) return
-  console.log("image", image)
-  //   storageRef.
-  //     .ref(`/images/${image.name}`)
-  //     .put(image)
-  //     .on("state_changed", alert("success"), alert)
+export const uploadImage = async (image: any) => {
+  if (image) {
+    const storageRef = ref(fbStorage, `/uploads/${image.name}`)
+    await uploadBytes(storageRef, image, {})
+    const imageURI = await getDownloadURL(storageRef)
+    console.log("image", image)
+    return imageURI
+  }
 }
