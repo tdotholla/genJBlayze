@@ -1,0 +1,10 @@
+{
+  "label": "tsc: watch",
+  "type": "typescript",
+  "tsconfig": "tsconfig-watch.json", //!important
+  "option": "watch",
+  "runOptions": {
+    "runOn": "folderOpen"
+  },
+  "problemMatcher": ["$tsc-watch"]
+}

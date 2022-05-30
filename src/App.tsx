@@ -11,6 +11,10 @@ for (let index = 0; index < IMAGES.length; index++) {
 function App() {
   return (
     <Box className="App">
+      <Center>
+        <input type="file" accept=".png, .jpg, .tiff, .tif, .gif" />
+        <button>Upload</button>
+      </Center>
       <SimpleGrid columns={2}>
         {IMAGES.map((path) => (
           <Center>
@@ -34,7 +38,7 @@ function App() {
         ))}
       </SimpleGrid>
     </Box>
-  );
+  )
 }
 
 export default App;
