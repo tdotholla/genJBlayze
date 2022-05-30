@@ -29,7 +29,7 @@
   },
   "scripts": {
     "prebuild": "tsc && eslint --fix ./src",
-    "gen": "node --experimental-specifier-resolution=node --max_old_space_size=12288 gen/generate.js",
+    "gen": "node --experimental-specifier-resolution=node --max_old_space_size=12288 dist/gen/generate.js",
     "start": "react-scripts start",
     "build": "yarn gen && react-scripts build",
     "runit": "yarn build && yarn start",
