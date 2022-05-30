@@ -18,18 +18,22 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "noEmit": false,
-    "sourceMap": true,
-    "outDir": "dist"
+    "rootDir": "src/",
+    "noEmit": true,
+    // "outDir": "build/gen"
   },
+"references": [
+  {
+    "path": "gen"
+  }
+],
   "include": [
-    "src/**/*",
-    "gen/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "_archive",
     "build",
-    "public"
+    "public",
   ]
 }

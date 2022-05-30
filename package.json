@@ -28,7 +28,7 @@
     "firebase": "^9.8.2"
   },
   "scripts": {
-    "prebuild": "tsc && eslint --fix ./src",
+    "prebuild": "tsc -b && eslint --fix ./src",
     "gen": "node --experimental-specifier-resolution=node --max_old_space_size=12288 gen/generate.js",
     "start": "react-scripts start",
     "build": "yarn gen && react-scripts build",
