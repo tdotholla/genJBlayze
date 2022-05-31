@@ -9,6 +9,9 @@ import {
   FormLabel,
   FormErrorMessage,
   Img,
+  Grid,
+  GridItem,
+  Flex,
 } from "@chakra-ui/react"
 import { BaseSyntheticEvent, useState } from "react"
 import "./App.css"
@@ -26,16 +29,54 @@ function App() {
   const [imageURI, setImageURI] = useState("")
   const [previewURI, setPreviewURI] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
+  const [layerImages, setLayerImages] = useState([])
 
-  const onClick = async () => {
+  const onClickUpload = async () => {
     if (userImage) {
       const uri = await uploadImage(userImage)
       uri && setImageURI(uri)
-      console.log(imageURI)
     } else {
       setErrorMsg("No Image Seleted")
     }
   }
+  const getLayers = async () => {
+    // post image to url, get response back,
+    // response is array of images and metadata
+    // Example POST method implementation:
+    // Default options are marked with *
+    const POST_URI =
+      "https://us-central1-shop-mocknstock.cloudfunctions.net/app/get-image-layers"
+    const data = {
+      imageUrl: imageURI,
+      fuzz: "1%",
+      numDominantColorsToExtract: 5,
+    }
+
+    const response = await fetch(POST_URI, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // redirect: "follow", // manual, *follow, error
+      // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response
+            .text()
+            .then((result) => Promise.reject(new Error(result)))
+        }
+        return response.json()
+      })
+      .then((data) => data)
+      .catch((err) => console.log("error", err))
+    setLayerImages(response.urls) // parses JSON response into native JavaScript objects
+  }
+
   return (
     <Box className="App">
       <Center marginBlock="10">
@@ -59,7 +100,20 @@ function App() {
                 reader.readAsDataURL(e.target.files[0])
               }}
             />
-            <Button onClick={onClick}>Upload</Button>
+            {previewURI && <Button onClick={onClickUpload}>Upload</Button>}
+            {imageURI && <Button onClick={getLayers}>Get Layers</Button>}
+            {console.log(layerImages)}
+            {layerImages?.length > 0 && (
+              <Flex style={{ overflowX: "scroll" }}>
+                <Grid templateColumns="repeat(5, 1fr)" gap={5}>
+                  {layerImages.map((url) => (
+                    <GridItem>
+                      <Image src={url} />
+                    </GridItem>
+                  ))}
+                </Grid>
+              </Flex>
+            )}
             {errorMsg && <FormErrorMessage>{errorMsg}</FormErrorMessage>}
           </FormControl>
         </Box>
