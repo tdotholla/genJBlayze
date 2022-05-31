@@ -13,7 +13,7 @@ const firebaseConfig = {
 }
 
 export const appRef = initializeApp(firebaseConfig)
-export const analytics = getAnalytics(appRef)
+// export const analytics = getAnalytics(appRef)
 export const fbStorage = getStorage(appRef)
 // const storageRef = ref(fbStorage, "/uploads")
 
