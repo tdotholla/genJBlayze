@@ -12,6 +12,7 @@ import {
   Grid,
   GridItem,
   FormHelperText,
+
 } from "@chakra-ui/react"
 import { BaseSyntheticEvent, useState } from "react"
 import "./App.css"
@@ -58,7 +59,6 @@ function App() {
       setErrorMsg("No Image Seleted")
     }
   }
-
   const onFileInputChange = (e: BaseSyntheticEvent) => {
     const file = e.target.files[0]
     setUserImage(file)
@@ -171,7 +171,6 @@ function App() {
             {layerImages && (
               <Button onClick={() => assembleImages()}>Assemble Images</Button>
             )}
-
             {errorMsg && <FormErrorMessage>{errorMsg}</FormErrorMessage>}
           </FormControl>
         </Box>
