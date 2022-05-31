@@ -1,6 +1,6 @@
 [
   {
-    "hash": "01112231415161718191101111122",
+    "hash": "01112431415161718191101111121",
     "decodedHash": [
       {
         "0": 1
@@ -9,133 +9,7 @@
         "1": 1
       },
       {
-        "2": 2
-      },
-      {
-        "3": 1
-      },
-      {
-        "4": 1
-      },
-      {
-        "5": 1
-      },
-      {
-        "6": 1
-      },
-      {
-        "7": 1
-      },
-      {
-        "8": 1
-      },
-      {
-        "9": 1
-      },
-      {
-        "10": 1
-      },
-      {
-        "11": 1
-      },
-      {
-        "12": 2
-      }
-    ],
-    "edition": 1,
-    "date": 1644552322752,
-    "attributes": [
-      {
-        "id": 1,
-        "layer": "nameplate",
-        "name": "nameplate",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "face",
-        "name": "face",
-        "rarity": "original"
-      },
-      {
-        "id": 2,
-        "layer": "hair",
-        "name": "hair 3",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "moustache",
-        "name": "moustache",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyebrows",
-        "name": "eyebrows",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "goatee",
-        "name": "goatee",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "nose",
-        "name": "nose",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyes",
-        "name": "eyes",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "teeth",
-        "name": "teeth",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "pupils",
-        "name": "pupils",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "lips",
-        "name": "lips",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_body",
-        "name": "blunt_body",
-        "rarity": "original"
-      },
-      {
-        "id": 2,
-        "layer": "blunt_smoke",
-        "name": "blunt_smokeeddish",
-        "rarity": "rare"
-      }
-    ]
-  },
-  {
-    "hash": "01112331415161718191101111121",
-    "decodedHash": [
-      {
-        "0": 1
-      },
-      {
-        "1": 1
-      },
-      {
-        "2": 3
+        "2": 4
       },
       {
         "3": 1
@@ -168,8 +42,8 @@
         "12": 1
       }
     ],
-    "edition": 2,
-    "date": 1644552323623,
+    "edition": 1,
+    "date": 1653927363214,
     "attributes": [
       {
         "id": 1,
@@ -184,9 +58,9 @@
         "rarity": "original"
       },
       {
-        "id": 3,
+        "id": 4,
         "layer": "hair",
-        "name": "hair 4",
+        "name": "hair 5",
         "rarity": "original"
       },
       {
@@ -294,8 +168,8 @@
         "12": 1
       }
     ],
-    "edition": 3,
-    "date": 1644552324481,
+    "edition": 2,
+    "date": 1653927364604,
     "attributes": [
       {
         "id": 1,
@@ -378,6 +252,132 @@
     ]
   },
   {
+    "hash": "01112331415161718191101111122",
+    "decodedHash": [
+      {
+        "0": 1
+      },
+      {
+        "1": 1
+      },
+      {
+        "2": 3
+      },
+      {
+        "3": 1
+      },
+      {
+        "4": 1
+      },
+      {
+        "5": 1
+      },
+      {
+        "6": 1
+      },
+      {
+        "7": 1
+      },
+      {
+        "8": 1
+      },
+      {
+        "9": 1
+      },
+      {
+        "10": 1
+      },
+      {
+        "11": 1
+      },
+      {
+        "12": 2
+      }
+    ],
+    "edition": 3,
+    "date": 1653927365992,
+    "attributes": [
+      {
+        "id": 1,
+        "layer": "nameplate",
+        "name": "nameplate",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "face",
+        "name": "face",
+        "rarity": "original"
+      },
+      {
+        "id": 3,
+        "layer": "hair",
+        "name": "hair 4",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "moustache",
+        "name": "moustache",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyebrows",
+        "name": "eyebrows",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "goatee",
+        "name": "goatee",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "nose",
+        "name": "nose",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyes",
+        "name": "eyes",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "teeth",
+        "name": "teeth",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "pupils",
+        "name": "pupils",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "lips",
+        "name": "lips",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_body",
+        "name": "blunt_body",
+        "rarity": "original"
+      },
+      {
+        "id": 2,
+        "layer": "blunt_smoke",
+        "name": "blunt_smokeeddish",
+        "rarity": "rare"
+      }
+    ]
+  },
+  {
     "hash": "01112131415161718191101111121",
     "decodedHash": [
       {
@@ -421,7 +421,7 @@
       }
     ],
     "edition": 4,
-    "date": 1644552325336,
+    "date": 1653927367367,
     "attributes": [
       {
         "id": 1,
@@ -439,6 +439,510 @@
         "id": 1,
         "layer": "hair",
         "name": "hair 2",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "moustache",
+        "name": "moustache",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyebrows",
+        "name": "eyebrows",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "goatee",
+        "name": "goatee",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "nose",
+        "name": "nose",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyes",
+        "name": "eyes",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "teeth",
+        "name": "teeth",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "pupils",
+        "name": "pupils",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "lips",
+        "name": "lips",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_body",
+        "name": "blunt_body",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_smoke",
+        "name": "blunt_smoke",
+        "rarity": "original"
+      }
+    ]
+  },
+  {
+    "hash": "01112131415161718191101111122",
+    "decodedHash": [
+      {
+        "0": 1
+      },
+      {
+        "1": 1
+      },
+      {
+        "2": 1
+      },
+      {
+        "3": 1
+      },
+      {
+        "4": 1
+      },
+      {
+        "5": 1
+      },
+      {
+        "6": 1
+      },
+      {
+        "7": 1
+      },
+      {
+        "8": 1
+      },
+      {
+        "9": 1
+      },
+      {
+        "10": 1
+      },
+      {
+        "11": 1
+      },
+      {
+        "12": 2
+      }
+    ],
+    "edition": 5,
+    "date": 1653927368754,
+    "attributes": [
+      {
+        "id": 1,
+        "layer": "nameplate",
+        "name": "nameplate",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "face",
+        "name": "face",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "hair",
+        "name": "hair 2",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "moustache",
+        "name": "moustache",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyebrows",
+        "name": "eyebrows",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "goatee",
+        "name": "goatee",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "nose",
+        "name": "nose",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyes",
+        "name": "eyes",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "teeth",
+        "name": "teeth",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "pupils",
+        "name": "pupils",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "lips",
+        "name": "lips",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_body",
+        "name": "blunt_body",
+        "rarity": "original"
+      },
+      {
+        "id": 2,
+        "layer": "blunt_smoke",
+        "name": "blunt_smokeeddish",
+        "rarity": "rare"
+      }
+    ]
+  },
+  {
+    "hash": "01112431415161718191101111121",
+    "decodedHash": [
+      {
+        "0": 1
+      },
+      {
+        "1": 1
+      },
+      {
+        "2": 4
+      },
+      {
+        "3": 1
+      },
+      {
+        "4": 1
+      },
+      {
+        "5": 1
+      },
+      {
+        "6": 1
+      },
+      {
+        "7": 1
+      },
+      {
+        "8": 1
+      },
+      {
+        "9": 1
+      },
+      {
+        "10": 1
+      },
+      {
+        "11": 1
+      },
+      {
+        "12": 1
+      }
+    ],
+    "edition": 6,
+    "date": 1653927370130,
+    "attributes": [
+      {
+        "id": 1,
+        "layer": "nameplate",
+        "name": "nameplate",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "face",
+        "name": "face",
+        "rarity": "original"
+      },
+      {
+        "id": 4,
+        "layer": "hair",
+        "name": "hair 5",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "moustache",
+        "name": "moustache",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyebrows",
+        "name": "eyebrows",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "goatee",
+        "name": "goatee",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "nose",
+        "name": "nose",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyes",
+        "name": "eyes",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "teeth",
+        "name": "teeth",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "pupils",
+        "name": "pupils",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "lips",
+        "name": "lips",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_body",
+        "name": "blunt_body",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_smoke",
+        "name": "blunt_smoke",
+        "rarity": "original"
+      }
+    ]
+  },
+  {
+    "hash": "01112531415161718191101111121",
+    "decodedHash": [
+      {
+        "0": 1
+      },
+      {
+        "1": 1
+      },
+      {
+        "2": 5
+      },
+      {
+        "3": 1
+      },
+      {
+        "4": 1
+      },
+      {
+        "5": 1
+      },
+      {
+        "6": 1
+      },
+      {
+        "7": 1
+      },
+      {
+        "8": 1
+      },
+      {
+        "9": 1
+      },
+      {
+        "10": 1
+      },
+      {
+        "11": 1
+      },
+      {
+        "12": 1
+      }
+    ],
+    "edition": 7,
+    "date": 1653927371539,
+    "attributes": [
+      {
+        "id": 1,
+        "layer": "nameplate",
+        "name": "nameplate",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "face",
+        "name": "face",
+        "rarity": "original"
+      },
+      {
+        "id": 5,
+        "layer": "hair",
+        "name": "hair 6",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "moustache",
+        "name": "moustache",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyebrows",
+        "name": "eyebrows",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "goatee",
+        "name": "goatee",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "nose",
+        "name": "nose",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "eyes",
+        "name": "eyes",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "teeth",
+        "name": "teeth",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "pupils",
+        "name": "pupils",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "lips",
+        "name": "lips",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_body",
+        "name": "blunt_body",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "blunt_smoke",
+        "name": "blunt_smoke",
+        "rarity": "original"
+      }
+    ]
+  },
+  {
+    "hash": "01112531415161718191101111121",
+    "decodedHash": [
+      {
+        "0": 1
+      },
+      {
+        "1": 1
+      },
+      {
+        "2": 5
+      },
+      {
+        "3": 1
+      },
+      {
+        "4": 1
+      },
+      {
+        "5": 1
+      },
+      {
+        "6": 1
+      },
+      {
+        "7": 1
+      },
+      {
+        "8": 1
+      },
+      {
+        "9": 1
+      },
+      {
+        "10": 1
+      },
+      {
+        "11": 1
+      },
+      {
+        "12": 1
+      }
+    ],
+    "edition": 8,
+    "date": 1653927373037,
+    "attributes": [
+      {
+        "id": 1,
+        "layer": "nameplate",
+        "name": "nameplate",
+        "rarity": "original"
+      },
+      {
+        "id": 1,
+        "layer": "face",
+        "name": "face",
+        "rarity": "original"
+      },
+      {
+        "id": 5,
+        "layer": "hair",
+        "name": "hair 6",
         "rarity": "original"
       },
       {
@@ -546,8 +1050,8 @@
         "12": 2
       }
     ],
-    "edition": 5,
-    "date": 1644552326205,
+    "edition": 9,
+    "date": 1653927374489,
     "attributes": [
       {
         "id": 1,
@@ -630,7 +1134,7 @@
     ]
   },
   {
-    "hash": "01112131415161718191101111122",
+    "hash": "01112631415161718191101111122",
     "decodedHash": [
       {
         "0": 1
@@ -639,7 +1143,7 @@
         "1": 1
       },
       {
-        "2": 1
+        "2": 6
       },
       {
         "3": 1
@@ -672,8 +1176,8 @@
         "12": 2
       }
     ],
-    "edition": 6,
-    "date": 1644552327067,
+    "edition": 10,
+    "date": 1653927375968,
     "attributes": [
       {
         "id": 1,
@@ -688,9 +1192,9 @@
         "rarity": "original"
       },
       {
-        "id": 1,
+        "id": 6,
         "layer": "hair",
-        "name": "hair 2",
+        "name": "hair 7",
         "rarity": "original"
       },
       {
@@ -752,510 +1256,6 @@
         "layer": "blunt_smoke",
         "name": "blunt_smokeeddish",
         "rarity": "rare"
-      }
-    ]
-  },
-  {
-    "hash": "01112431415161718191101111121",
-    "decodedHash": [
-      {
-        "0": 1
-      },
-      {
-        "1": 1
-      },
-      {
-        "2": 4
-      },
-      {
-        "3": 1
-      },
-      {
-        "4": 1
-      },
-      {
-        "5": 1
-      },
-      {
-        "6": 1
-      },
-      {
-        "7": 1
-      },
-      {
-        "8": 1
-      },
-      {
-        "9": 1
-      },
-      {
-        "10": 1
-      },
-      {
-        "11": 1
-      },
-      {
-        "12": 1
-      }
-    ],
-    "edition": 7,
-    "date": 1644552327933,
-    "attributes": [
-      {
-        "id": 1,
-        "layer": "nameplate",
-        "name": "nameplate",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "face",
-        "name": "face",
-        "rarity": "original"
-      },
-      {
-        "id": 4,
-        "layer": "hair",
-        "name": "hair 5",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "moustache",
-        "name": "moustache",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyebrows",
-        "name": "eyebrows",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "goatee",
-        "name": "goatee",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "nose",
-        "name": "nose",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyes",
-        "name": "eyes",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "teeth",
-        "name": "teeth",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "pupils",
-        "name": "pupils",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "lips",
-        "name": "lips",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_body",
-        "name": "blunt_body",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_smoke",
-        "name": "blunt_smoke",
-        "rarity": "original"
-      }
-    ]
-  },
-  {
-    "hash": "01112131415161718191101111121",
-    "decodedHash": [
-      {
-        "0": 1
-      },
-      {
-        "1": 1
-      },
-      {
-        "2": 1
-      },
-      {
-        "3": 1
-      },
-      {
-        "4": 1
-      },
-      {
-        "5": 1
-      },
-      {
-        "6": 1
-      },
-      {
-        "7": 1
-      },
-      {
-        "8": 1
-      },
-      {
-        "9": 1
-      },
-      {
-        "10": 1
-      },
-      {
-        "11": 1
-      },
-      {
-        "12": 1
-      }
-    ],
-    "edition": 8,
-    "date": 1644552328814,
-    "attributes": [
-      {
-        "id": 1,
-        "layer": "nameplate",
-        "name": "nameplate",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "face",
-        "name": "face",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "hair",
-        "name": "hair 2",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "moustache",
-        "name": "moustache",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyebrows",
-        "name": "eyebrows",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "goatee",
-        "name": "goatee",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "nose",
-        "name": "nose",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyes",
-        "name": "eyes",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "teeth",
-        "name": "teeth",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "pupils",
-        "name": "pupils",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "lips",
-        "name": "lips",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_body",
-        "name": "blunt_body",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_smoke",
-        "name": "blunt_smoke",
-        "rarity": "original"
-      }
-    ]
-  },
-  {
-    "hash": "01112231415161718191101111121",
-    "decodedHash": [
-      {
-        "0": 1
-      },
-      {
-        "1": 1
-      },
-      {
-        "2": 2
-      },
-      {
-        "3": 1
-      },
-      {
-        "4": 1
-      },
-      {
-        "5": 1
-      },
-      {
-        "6": 1
-      },
-      {
-        "7": 1
-      },
-      {
-        "8": 1
-      },
-      {
-        "9": 1
-      },
-      {
-        "10": 1
-      },
-      {
-        "11": 1
-      },
-      {
-        "12": 1
-      }
-    ],
-    "edition": 9,
-    "date": 1644552329699,
-    "attributes": [
-      {
-        "id": 1,
-        "layer": "nameplate",
-        "name": "nameplate",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "face",
-        "name": "face",
-        "rarity": "original"
-      },
-      {
-        "id": 2,
-        "layer": "hair",
-        "name": "hair 3",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "moustache",
-        "name": "moustache",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyebrows",
-        "name": "eyebrows",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "goatee",
-        "name": "goatee",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "nose",
-        "name": "nose",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyes",
-        "name": "eyes",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "teeth",
-        "name": "teeth",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "pupils",
-        "name": "pupils",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "lips",
-        "name": "lips",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_body",
-        "name": "blunt_body",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_smoke",
-        "name": "blunt_smoke",
-        "rarity": "original"
-      }
-    ]
-  },
-  {
-    "hash": "01112231415161718191101111121",
-    "decodedHash": [
-      {
-        "0": 1
-      },
-      {
-        "1": 1
-      },
-      {
-        "2": 2
-      },
-      {
-        "3": 1
-      },
-      {
-        "4": 1
-      },
-      {
-        "5": 1
-      },
-      {
-        "6": 1
-      },
-      {
-        "7": 1
-      },
-      {
-        "8": 1
-      },
-      {
-        "9": 1
-      },
-      {
-        "10": 1
-      },
-      {
-        "11": 1
-      },
-      {
-        "12": 1
-      }
-    ],
-    "edition": 10,
-    "date": 1644552330649,
-    "attributes": [
-      {
-        "id": 1,
-        "layer": "nameplate",
-        "name": "nameplate",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "face",
-        "name": "face",
-        "rarity": "original"
-      },
-      {
-        "id": 2,
-        "layer": "hair",
-        "name": "hair 3",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "moustache",
-        "name": "moustache",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyebrows",
-        "name": "eyebrows",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "goatee",
-        "name": "goatee",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "nose",
-        "name": "nose",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "eyes",
-        "name": "eyes",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "teeth",
-        "name": "teeth",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "pupils",
-        "name": "pupils",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "lips",
-        "name": "lips",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_body",
-        "name": "blunt_body",
-        "rarity": "original"
-      },
-      {
-        "id": 1,
-        "layer": "blunt_smoke",
-        "name": "blunt_smoke",
-        "rarity": "original"
       }
     ]
   }

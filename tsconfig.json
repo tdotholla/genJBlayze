@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,9 +18,22 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
+    "rootDir": "src/",
+    "noEmit": true,
+    // "outDir": "build/gen"
   },
+"references": [
+  {
+    "path": "gen"
+  }
+],
   "include": [
-    "src/**/*",
-    "gen/**/*"
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "_archive",
+    "build",
+    "public",
   ]
 }
