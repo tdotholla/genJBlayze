@@ -12,10 +12,9 @@ import {
   Grid,
   GridItem,
   FormHelperText,
-
+  Progress,
 } from "@chakra-ui/react"
 import { BaseSyntheticEvent, useState } from "react"
-import "./App.css"
 import { uploadImage } from "./db/firebase"
 
 //get length
@@ -28,7 +27,7 @@ for (let index = 0; index < IMAGES.length; index++) {
 }
 
 function App() {
-  const [userImage, setUserImage] = useState({} as File)
+  const [userImage, setUserImage] = useState(null)
   // const [imageURI, setImageURI] = useState("")
   const [previewURI, setPreviewURI] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
@@ -59,12 +58,15 @@ function App() {
       setErrorMsg("No Image Seleted")
     }
   }
+
   const onFileInputChange = (e: BaseSyntheticEvent) => {
+    setPreviewURI("")
+    setUserImage(null)
     const file = e.target.files[0]
     setUserImage(file)
     const reader = new FileReader()
     reader.onload = (ev) =>
-      ev.target?.result && setPreviewURI(ev.target.result as any)
+      ev.target?.result && setPreviewURI(ev.target.result as string)
     reader.readAsDataURL(file)
     if (file.size > 1234567) {
       console.warn("BIG FILE!!!", file.size)
@@ -80,7 +82,7 @@ function App() {
     // response is array of images and metadata
     // Example POST method implementation:
     // Default options are marked with *
-
+    setLayerImages([])
     const data = {
       imageUrl,
       fuzz,
@@ -114,6 +116,7 @@ function App() {
         console.error("error", err)
       })
     setLayerImages(response.urls) // parses JSON response into native JavaScript objects
+    setUploadStatus("")
   }
   const assembleImages = async () => {
     // get urls of each layer, save to fs in certain way, then run generate script
@@ -157,13 +160,19 @@ function App() {
                 />
                 <Button onClick={onClickUpload}>Get Layers</Button>
                 <FormHelperText>{uploadStatus}</FormHelperText>
+                {uploadStatus && <Progress size="xs" isIndeterminate />}
               </Box>
             )}
             {layerImages?.length > 0 && (
-              <Grid templateColumns="repeat(5, 1fr)" gap={5}>
+              <Grid
+                templateColumns="repeat(5, 1fr)"
+                gap={5}
+                overflowX="scroll"
+                width="100vw"
+              >
                 {layerImages.map((url) => (
-                  <GridItem>
-                    <Image src={url} />
+                  <GridItem key={url}>
+                    <Image src={url} alt="Layer Image" />
                   </GridItem>
                 ))}
               </Grid>
@@ -171,6 +180,7 @@ function App() {
             {layerImages && (
               <Button onClick={() => assembleImages()}>Assemble Images</Button>
             )}
+
             {errorMsg && <FormErrorMessage>{errorMsg}</FormErrorMessage>}
           </FormControl>
         </Box>
@@ -187,6 +197,7 @@ function App() {
               boxShadow="0 0 0.75rem crimson"
             >
               <Image
+                alt="Gallery Image"
                 src={path}
                 maxHeight="100%"
                 onError={(event) =>
