@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
-import { getAnalytics } from "firebase/analytics"
+// import { getAnalytics } from "firebase/analytics"
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_AvlJ-tlRx7dGtZ_qUmzCEw2ekQ11XoI",
@@ -17,7 +17,7 @@ export const appRef = initializeApp(firebaseConfig)
 export const fbStorage = getStorage(appRef)
 // const storageRef = ref(fbStorage, "/uploads")
 
-export const uploadImage = async (image: any) => {
+export const uploadImage = async (image: File) => {
   if (image) {
     const storageRef = ref(fbStorage, `/uploads/${image.name}`)
     await uploadBytes(storageRef, image, {})

@@ -4,7 +4,7 @@ import "../components/App.css"
 
 export default function MyApp({ Component, pageProps }) {
   <Head>
-    <title>JohnnyBlayzin'</title>
+    <title>JohnnyBlayzin&#39;</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </Head>
   return <Component {...pageProps} />

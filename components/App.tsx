@@ -66,7 +66,7 @@ function App() {
     setUserImage(file)
     const reader = new FileReader()
     reader.onload = (ev) =>
-      ev.target?.result && setPreviewURI(ev.target.result as any)
+      ev.target?.result && setPreviewURI(ev.target.result as string)
     reader.readAsDataURL(file)
     if (file.size > 1234567) {
       console.warn("BIG FILE!!!", file.size)
@@ -172,7 +172,7 @@ function App() {
               >
                 {layerImages.map((url) => (
                   <GridItem key={url}>
-                    <Image src={url} />
+                    <Image src={url} alt="Layer Image" />
                   </GridItem>
                 ))}
               </Grid>
@@ -197,6 +197,7 @@ function App() {
               boxShadow="0 0 0.75rem crimson"
             >
               <Image
+                alt="Gallery Image"
                 src={path}
                 maxHeight="100%"
                 onError={(event) =>
