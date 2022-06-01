@@ -22,7 +22,7 @@ export const uploadImage = async (image: any) => {
     const storageRef = ref(fbStorage, `/uploads/${image.name}`)
     await uploadBytes(storageRef, image, {})
     const imageURI = await getDownloadURL(storageRef)
-    console.log("image", image)
+    // console.info("image", image)
     return imageURI
   }
 }
