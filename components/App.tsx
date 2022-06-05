@@ -87,6 +87,8 @@ function App() {
       imageUrl,
       fuzz,
       numDominantColorsToExtract,
+      isWhiteTransparent: true,
+      // filename
     }
 
     const response = await fetch(POST_URI, {
@@ -120,6 +122,33 @@ function App() {
   }
   const assembleImages = async () => {
     // get urls of each layer, save to fs in certain way, then run generate script
+    const response = await fetch("./api/gen", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "same-origin", // no-cors, *cors, same-origin
+      // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // redirect: "follow", // manual, *follow, error
+      // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(layerImages), // body data type must match "Content-Type" header
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response
+            .text()
+            .then((result) => Promise.reject(new Error(result)))
+        }
+        setUploadStatus("DISPLAYING LAYERS....")
+        return response.json()
+      })
+      .then((data) => data)
+      .catch((err) => {
+        setErrorMsg("Error Fetching Layers: " + err.message)
+        console.error("error", err)
+      })
+    console.log(response)
   }
   return (
     <Box className="App">
@@ -165,7 +194,7 @@ function App() {
             )}
             {layerImages?.length > 0 && (
               <Grid
-                templateColumns="repeat(5, 1fr)"
+                templateColumns="repeat(3, 1fr)"
                 gap={5}
                 overflowX="scroll"
                 width="100vw"
