@@ -13,9 +13,10 @@ import {
   GridItem,
   FormHelperText,
   Progress,
+  Text,
 } from "@chakra-ui/react"
 import { BaseSyntheticEvent, useState } from "react"
-import { uploadImage } from "./db/firebase"
+import { artworkCreate, storeImage } from "./db/firebase"
 
 //get length
 const BASE_PATH = `/gallery/`
@@ -31,26 +32,30 @@ function App() {
   // const [imageURI, setImageURI] = useState("")
   const [previewURI, setPreviewURI] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
+  const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
   const [layerImages, setLayerImages] = useState([])
   const [fuzzNum, setFuzzNum] = useState(0)
   const [colorsNum, setColorsNum] = useState(0)
 
-  type ILayers = {
+  type IUploadSettings = {
     imageUrl: string | undefined
     fuzz: number
     numDominantColorsToExtract: number
   }
 
   const onClickUpload = async () => {
-    setUploadStatus("UPLOADING...")
+    setUploadStatus("STORING IMAGE...")
     if (userImage) {
-      const imageUrl = await uploadImage(userImage)
+      const imageUrl = await storeImage(userImage)
       const metadata = {
         imageUrl,
         fuzz: fuzzNum,
         numDominantColorsToExtract: colorsNum,
       }
+      setUploadStatus("UPLOADING DOCUMENT....")
+      const awid = await artworkCreate({ sourceImageUri: imageUrl })
+      setProjectId(awid)
       setUploadStatus("GETTING LAYERS....")
       // uri && setImageURI(uri)
       imageUrl && getLayers(metadata)
@@ -77,7 +82,7 @@ function App() {
     imageUrl,
     fuzz,
     numDominantColorsToExtract,
-  }: ILayers) => {
+  }: IUploadSettings) => {
     // post image to url, get response back,
     // response is array of images and metadata
     // Example POST method implementation:
@@ -192,6 +197,7 @@ function App() {
                 {uploadStatus && <Progress size="xs" isIndeterminate />}
               </Box>
             )}
+            {projectId && <Text>Project ID: {projectId}</Text>}
             {layerImages?.length > 0 && (
               <Grid
                 templateColumns="repeat(3, 1fr)"
