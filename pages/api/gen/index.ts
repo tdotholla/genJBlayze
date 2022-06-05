@@ -17,7 +17,7 @@ export default async function downloadHandler(
     case "POST": {
       const path = "./images/image.png"
       const download = (url, path, callback) => {
-        console.log("donwloading file...")
+        console.log("downloading file...")
       }
       const uris = req.body as string[]
       console.log(uris)

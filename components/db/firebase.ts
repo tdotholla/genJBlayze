@@ -61,7 +61,7 @@ interface IUploadedImage {
   editions?: number
 }
 export const artworkSet = async function (data: Partial<IUploadedImage>) {
-  const artworkID = data.uid ?? nanoid()
+  const artworkID = data.awid ?? nanoid()
   const dateTime = data.dateTime ?? new Date().toISOString()
   const origData = {
     awid: artworkID,

@@ -39,8 +39,9 @@ function App() {
   const [colorsNum, setColorsNum] = useState(0)
 
   type IUploadSettings = {
+    awid: string
     imageUrl: string | undefined
-    fuzz: number
+    fuzz: string
     numDominantColorsToExtract: number
   }
 
@@ -48,13 +49,14 @@ function App() {
     setUploadStatus("STORING IMAGE...")
     if (userImage) {
       const imageUrl = await storeImage(userImage)
-      const metadata = {
-        imageUrl,
-        fuzz: fuzzNum,
-        numDominantColorsToExtract: colorsNum,
-      }
       setUploadStatus("UPLOADING DOCUMENT....")
       const awid = await artworkSet({ sourceImageUri: imageUrl })
+      const metadata = {
+        awid,
+        imageUrl,
+        fuzz: `${fuzzNum}%`,
+        numDominantColorsToExtract: colorsNum,
+      }
       setProjectId(awid)
       setUploadStatus("GETTING LAYERS....")
       // uri && setImageURI(uri)
@@ -79,6 +81,7 @@ function App() {
   }
 
   const getLayers = async ({
+    awid,
     imageUrl,
     fuzz,
     numDominantColorsToExtract,
@@ -131,7 +134,7 @@ function App() {
         rarity: "normal",
       },
     }))
-    artworkSet({ awid: projectId, layers: layerData })
+    const ref = await artworkSet({ awid, layers: layerData })
     setUploadStatus("")
   }
   const assembleImages = async () => {
@@ -185,12 +188,12 @@ function App() {
             />
             {previewURI && (
               <Box>
-                <FormLabel width={"50%"}>Amount of Fuzz</FormLabel>
+                <FormLabel width={"50%"}>Amount of Fuzz (0-100%)</FormLabel>
                 <Input
                   id="fuzzNum"
                   type="number"
                   min={0}
-                  max={2000}
+                  max={100}
                   onChange={(ev) => setFuzzNum(Number(ev.target.value))}
                 />
                 <FormLabel width={"50%"}>Amount of Colors (layers)</FormLabel>
