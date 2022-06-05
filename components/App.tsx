@@ -16,7 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { BaseSyntheticEvent, useState } from "react"
-import { artworkCreate, storeImage } from "./db/firebase"
+import { artworkSet, storeImage } from "./db/firebase"
 
 //get length
 const BASE_PATH = `/gallery/`
@@ -54,7 +54,7 @@ function App() {
         numDominantColorsToExtract: colorsNum,
       }
       setUploadStatus("UPLOADING DOCUMENT....")
-      const awid = await artworkCreate({ sourceImageUri: imageUrl })
+      const awid = await artworkSet({ sourceImageUri: imageUrl })
       setProjectId(awid)
       setUploadStatus("GETTING LAYERS....")
       // uri && setImageURI(uri)
@@ -122,7 +122,16 @@ function App() {
         setErrorMsg("Error Fetching Layers: " + err.message)
         console.error("error", err)
       })
+    console.log(response)
     setLayerImages(response.urls) // parses JSON response into native JavaScript objects
+    const layerData = response.urls.map((url: string, i: number) => ({
+      [response.dominantColors[i].hexCode]: {
+        depthNumber: 1,
+        imageUri: url,
+        rarity: "normal",
+      },
+    }))
+    artworkSet({ awid: projectId, layers: layerData })
     setUploadStatus("")
   }
   const assembleImages = async () => {

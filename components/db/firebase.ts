@@ -1,11 +1,5 @@
 import { initializeApp } from "firebase/app"
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  StringFormat,
-  uploadBytes,
-} from "firebase/storage"
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
 import {
   collection,
   doc,
@@ -13,7 +7,7 @@ import {
   initializeFirestore,
   setDoc,
 } from "firebase/firestore"
-import { getAuth, useDeviceLanguage } from "firebase/auth"
+// import { getAuth, useDeviceLanguage } from "firebase/auth"
 // import { getAnalytics } from "firebase/analytics"
 import { nanoid } from "nanoid"
 
@@ -31,7 +25,7 @@ const appRef = initializeApp(firebaseConfig)
 // export const analytics = getAnalytics(appRef)
 const fsdb = initializeFirestore(appRef, {})
 const fbStorage = getStorage(appRef)
-useDeviceLanguage(getAuth())
+// useDeviceLanguage(getAuth())
 const uploadsRef = collection(fsdb, "UPLOADS")
 
 // const storageRef = ref(fbStorage, "/uploads")
@@ -50,28 +44,29 @@ export const storeImage = async (image: File) => {
 
 interface ILayer {
   [name: string]: {
-    depthNumber: number
+    depthNumber?: number
     imageUri: string
-    rarity: string
+    rarity?: string
   }
 }
 interface IUploadedImage {
   uid?: string
   awid: string
   sourceImageUri: string | undefined
-  dateTime: Date
-  fuzz: number
-  numDominantColorsToExtract: number
-  isWhiteTransparent: boolean
-  layers: ILayer
-  editions: number
+  dateTime?: string
+  fuzz?: number
+  numDominantColorsToExtract?: number
+  isWhiteTransparent?: boolean
+  layers?: ILayer
+  editions?: number
 }
-export const artworkCreate = async function (data: Partial<IUploadedImage>) {
+export const artworkSet = async function (data: Partial<IUploadedImage>) {
+  const artworkID = data.uid ?? nanoid()
+  const dateTime = data.dateTime ?? new Date().toISOString()
   const origData = {
-    awid: nanoid(),
-    dateTime: new Date().toISOString(),
+    awid: artworkID,
+    dateTime,
   }
-  const artworkID = nanoid()
   const docRef = doc(uploadsRef, artworkID)
   console.log("submitting to db...", { ...data, ...origData })
   await setDoc(docRef, { ...origData, ...data }, { merge: true })
