@@ -13,6 +13,7 @@ import {
   GridItem,
   FormHelperText,
   Progress,
+  Divider,
 } from "@chakra-ui/react"
 import { BaseSyntheticEvent, useState } from "react"
 import { uploadImage } from "./db/firebase"
@@ -118,7 +119,35 @@ function App() {
     setLayerImages(response.urls) // parses JSON response into native JavaScript objects
     setUploadStatus("")
   }
+
   const assembleImages = async () => {
+    await fetch("/api/gen", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // redirect: "follow", // manual, *follow, error
+      // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(layerImages), // body data type must match "Content-Type" header
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response
+            .text()
+            .then((result) => Promise.reject(new Error(result)))
+        }
+        setUploadStatus("RANDOMIZING LAYERS....")
+        return response.json()
+      })
+      .then((data) => data)
+      .catch((err) => {
+        setErrorMsg("Error Creating Layers: " + err.message)
+        console.error("error", err)
+      })
+    // send full array of urls to backend
     // get urls of each layer, save to fs in certain way, then run generate script
   }
   return (
@@ -126,11 +155,6 @@ function App() {
       <Center marginBlock="10">
         <Box>
           <FormControl isInvalid={!!errorMsg} isRequired>
-            {previewURI && (
-              <Box>
-                <Img src={previewURI} border={"1px solid red"} p={9} />
-              </Box>
-            )}
             <FormLabel width={"50%"} htmlFor="imgUpload">
               Upload File:
             </FormLabel>
@@ -142,6 +166,8 @@ function App() {
             />
             {previewURI && (
               <Box>
+                <Img src={previewURI} border={"1px solid red"} p={9} />
+                <Divider w={"80%"} />
                 <FormLabel width={"50%"}>Amount of Fuzz</FormLabel>
                 <Input
                   id="fuzzNum"
