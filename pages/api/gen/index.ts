@@ -4,11 +4,10 @@
 // run generate commands with params
 // upload images to store and return urls to all images
 
-import { timeStamp } from "console"
 import { convert, resize } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import path from "path"
-const maxAge = 1 * 24 * 60 * 60
+// const maxAge = 1 * 24 * 60 * 60
 
 /**
  *
@@ -21,8 +20,12 @@ const randomizeLayersHandler = async (
   req: NextApiRequest,
   res: NextApiResponse,
 ) => {
-  // const db = await connectToDatabase();
   // db.createIndex("pullups", { location: "2dsphere" });
+
+  // if (!req.user) {
+  //   return res.status(401).send('unauthenticated');
+  // }
+  if (!req.body) return res.status(400).send("You must write something")
 
   const {
     //can send query params to sort & limit results
@@ -67,13 +70,7 @@ const randomizeLayersHandler = async (
       // }
       // res.send({ pullups })
       break
-    case "POST":
-      // if (!req.user) {
-      //   return res.status(401).send('unauthenticated');
-      // }
-
-      if (!req.body) return res.status(400).send("You must write something")
-      console.log(JSON.parse(req.body))
+    case "GET":
       // const pullup = await insertPullUp(db, req.body.data)
       // return res.json({ pullup })
       break

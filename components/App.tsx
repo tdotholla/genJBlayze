@@ -14,9 +14,11 @@ import {
   FormHelperText,
   Progress,
   Divider,
+  Text,
 } from "@chakra-ui/react"
+import { nanoid } from "nanoid"
 import { BaseSyntheticEvent, useState } from "react"
-import { uploadImage } from "./db/firebase"
+import { updateArtworkSet, storeImage } from "./db/firebase"
 
 //get length
 const BASE_PATH = `/gallery/`
@@ -32,26 +34,40 @@ function App() {
   // const [imageURI, setImageURI] = useState("")
   const [previewURI, setPreviewURI] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
+  const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
   const [layerImages, setLayerImages] = useState([])
   const [fuzzNum, setFuzzNum] = useState(0)
   const [colorsNum, setColorsNum] = useState(0)
 
-  type ILayers = {
+  interface IUploadSettings {
+    _id: string
     imageUrl: string | undefined
-    fuzz: number
+    fuzz: string
     numDominantColorsToExtract: number
+  }
+  interface ILayerData {
+    [color: string]: {
+      _id: string
+      depthNumber: number
+      imageUri: string
+      rarity: string
+    }
   }
 
   const onClickUpload = async () => {
-    setUploadStatus("UPLOADING...")
+    setUploadStatus("STORING IMAGE...")
     if (userImage) {
-      const imageUrl = await uploadImage(userImage)
+      const imageUrl = await storeImage(userImage)
+      setUploadStatus("UPLOADING DOCUMENT....")
+      const awid = await updateArtworkSet({ sourceImageUri: imageUrl })
       const metadata = {
+        _id: awid,
         imageUrl,
-        fuzz: fuzzNum,
+        fuzz: `${fuzzNum}%`,
         numDominantColorsToExtract: colorsNum,
       }
+      setProjectId(awid)
       setUploadStatus("GETTING LAYERS....")
       // uri && setImageURI(uri)
       imageUrl && getLayers(metadata)
@@ -75,10 +91,11 @@ function App() {
   }
 
   const getLayers = async ({
+    _id: awid,
     imageUrl,
     fuzz,
     numDominantColorsToExtract,
-  }: ILayers) => {
+  }: IUploadSettings) => {
     // post image to url, get response back,
     // response is array of images and metadata
     // Example POST method implementation:
@@ -88,6 +105,8 @@ function App() {
       imageUrl,
       fuzz,
       numDominantColorsToExtract,
+      isWhiteTransparent: true,
+      // filename
     }
 
     const response = await fetch(POST_URI, {
@@ -118,6 +137,20 @@ function App() {
     console.info("::-LAYERS RESPONSE-::")
     console.info(response)
     setLayerImages(response.urls) // parses JSON response into native JavaScript objects
+
+    const layerData: ILayerData = {}
+    response.urls.map(async (url: string, i: number) => {
+      layerData[response.dominantColors[i].hexCode] = {
+        _id: await nanoid(),
+        depthNumber: i,
+        imageUri: url,
+        rarity: "normal",
+      }
+    })
+
+    const ref = await updateArtworkSet({ awid, layers: layerData })
+    console.log(ref)
+    console.log(awid)
     setUploadStatus("")
   }
 
@@ -152,8 +185,6 @@ function App() {
       })
     console.info("::-RANDOMIZATION RESPONSE-::")
     console.info(response)
-    // send full array of urls to backend
-    // get urls of each layer, save to fs in certain way, then run generate script
   }
   return (
     <Box className="App">
@@ -173,12 +204,13 @@ function App() {
               <Box>
                 <Img src={previewURI} border={"1px solid red"} p={9} />
                 <Divider w={"80%"} />
-                <FormLabel width={"50%"}>Amount of Fuzz</FormLabel>
+                <FormLabel width={"50%"}>Amount of Fuzz (0-100%)</FormLabel>
                 <Input
                   id="fuzzNum"
                   type="number"
                   min={0}
-                  max={2000}
+                  max={100}
+                  step={10}
                   onChange={(ev) => setFuzzNum(Number(ev.target.value))}
                 />
                 <FormLabel width={"50%"}>Amount of Colors (layers)</FormLabel>
@@ -194,9 +226,10 @@ function App() {
                 {uploadStatus && <Progress size="xs" isIndeterminate />}
               </Box>
             )}
+            {projectId && <Text>Project ID: {projectId}</Text>}
             {layerImages?.length > 0 && (
               <Grid
-                templateColumns="repeat(5, 1fr)"
+                templateColumns="repeat(3, 1fr)"
                 gap={5}
                 overflowX="scroll"
                 width="100vw"
