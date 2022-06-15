@@ -13,9 +13,10 @@ import {
   GridItem,
   FormHelperText,
   Progress,
+  Text,
 } from "@chakra-ui/react"
 import { BaseSyntheticEvent, useState } from "react"
-import { uploadImage } from "./db/firebase"
+import { artworkSet, storeImage } from "./db/firebase"
 
 //get length
 const BASE_PATH = `/gallery/`
@@ -31,26 +32,32 @@ function App() {
   // const [imageURI, setImageURI] = useState("")
   const [previewURI, setPreviewURI] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
+  const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
   const [layerImages, setLayerImages] = useState([])
   const [fuzzNum, setFuzzNum] = useState(0)
   const [colorsNum, setColorsNum] = useState(0)
 
-  type ILayers = {
+  type IUploadSettings = {
+    awid: string
     imageUrl: string | undefined
-    fuzz: number
+    fuzz: string
     numDominantColorsToExtract: number
   }
 
   const onClickUpload = async () => {
-    setUploadStatus("UPLOADING...")
+    setUploadStatus("STORING IMAGE...")
     if (userImage) {
-      const imageUrl = await uploadImage(userImage)
+      const imageUrl = await storeImage(userImage)
+      setUploadStatus("UPLOADING DOCUMENT....")
+      const awid = await artworkSet({ sourceImageUri: imageUrl })
       const metadata = {
+        awid,
         imageUrl,
-        fuzz: fuzzNum,
+        fuzz: `${fuzzNum}%`,
         numDominantColorsToExtract: colorsNum,
       }
+      setProjectId(awid)
       setUploadStatus("GETTING LAYERS....")
       // uri && setImageURI(uri)
       imageUrl && getLayers(metadata)
@@ -74,10 +81,11 @@ function App() {
   }
 
   const getLayers = async ({
+    awid,
     imageUrl,
     fuzz,
     numDominantColorsToExtract,
-  }: ILayers) => {
+  }: IUploadSettings) => {
     // post image to url, get response back,
     // response is array of images and metadata
     // Example POST method implementation:
@@ -87,6 +95,8 @@ function App() {
       imageUrl,
       fuzz,
       numDominantColorsToExtract,
+      isWhiteTransparent: true,
+      // filename
     }
 
     const response = await fetch(POST_URI, {
@@ -115,11 +125,47 @@ function App() {
         setErrorMsg("Error Fetching Layers: " + err.message)
         console.error("error", err)
       })
+    console.log(response)
     setLayerImages(response.urls) // parses JSON response into native JavaScript objects
+    const layerData = response.urls.map((url: string, i: number) => ({
+      [response.dominantColors[i].hexCode]: {
+        depthNumber: 1,
+        imageUri: url,
+        rarity: "normal",
+      },
+    }))
+    const ref = await artworkSet({ awid, layers: layerData })
     setUploadStatus("")
   }
   const assembleImages = async () => {
     // get urls of each layer, save to fs in certain way, then run generate script
+    const response = await fetch("./api/gen", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "same-origin", // no-cors, *cors, same-origin
+      // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // redirect: "follow", // manual, *follow, error
+      // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(layerImages), // body data type must match "Content-Type" header
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response
+            .text()
+            .then((result) => Promise.reject(new Error(result)))
+        }
+        setUploadStatus("DISPLAYING LAYERS....")
+        return response.json()
+      })
+      .then((data) => data)
+      .catch((err) => {
+        setErrorMsg("Error Fetching Layers: " + err.message)
+        console.error("error", err)
+      })
+    console.log(response)
   }
   return (
     <Box className="App">
@@ -142,12 +188,12 @@ function App() {
             />
             {previewURI && (
               <Box>
-                <FormLabel width={"50%"}>Amount of Fuzz</FormLabel>
+                <FormLabel width={"50%"}>Amount of Fuzz (0-100%)</FormLabel>
                 <Input
                   id="fuzzNum"
                   type="number"
                   min={0}
-                  max={2000}
+                  max={100}
                   onChange={(ev) => setFuzzNum(Number(ev.target.value))}
                 />
                 <FormLabel width={"50%"}>Amount of Colors (layers)</FormLabel>
@@ -163,9 +209,10 @@ function App() {
                 {uploadStatus && <Progress size="xs" isIndeterminate />}
               </Box>
             )}
+            {projectId && <Text>Project ID: {projectId}</Text>}
             {layerImages?.length > 0 && (
               <Grid
-                templateColumns="repeat(5, 1fr)"
+                templateColumns="repeat(3, 1fr)"
                 gap={5}
                 overflowX="scroll"
                 width="100vw"
