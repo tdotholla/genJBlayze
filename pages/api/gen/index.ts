@@ -36,7 +36,7 @@ const randomizeLayersHandler = async (
   const URI = "http://localhost:3000/gallery/1.png"
   const fileName = URI.split("/")[URI.split("/").length - 1].split(".")[0]
   // console.log(i, c, v)
-  console.log("body:", JSON.stringify(body))
+  console.log("body:", body)
 
   switch (method) {
     case "POST":
@@ -46,29 +46,23 @@ const randomizeLayersHandler = async (
         [URI, "-resize", "25%", `${fileRoot}${fileName}_cv.png`],
         function (err, stdout) {
           if (err) console.error(err.message)
-          res.send(
-            `<!DOCTYPE html>
-            <html>
-            File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
-            </html>
-            `,
-          )
+          // res.send(
+          //   `<!DOCTYPE html>
+          //   <html>
+          //   File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
+          //   </html>
+          //   `,
+          // )
         },
       )
-      // const pullups =
-      //   lat && lng
-      //     ? await getPullupsNearBy(
-      //       db,
-      //       { lat: Number(lat), lng: Number(lng) },
-      //       by,
-      //       limit ? parseInt(limit, 10) : 100
-      //     )
+
       //     : await getPullUps(db);
-      // if (lat && lng && pullups.length > 0) {
+      // if (response.length > 0) {
       //   // This is only safe to cache when a timeframe is defined
       //   res.setHeader("cache-control", `public, max-age=${maxAge}`);
       // }
-      // res.send({ pullups })
+      res.send("dat uploaded successfully")
+
       break
     case "GET":
       // const pullup = await insertPullUp(db, req.body.data)

@@ -37,6 +37,7 @@ function App() {
   const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
   const [layerImages, setLayerImages] = useState([])
+  const [metadata, setMetaData] = useState({} as ILayerData)
   const [fuzzNum, setFuzzNum] = useState(0)
   const [colorsNum, setColorsNum] = useState(0)
 
@@ -136,7 +137,7 @@ function App() {
 
     console.info("::-LAYERS RESPONSE-::")
     console.info(response)
-    setLayerImages(response.urls) // parses JSON response into native JavaScript objects
+    // setLayerImages(response.urls) // parses JSON response into native JavaScript objects
 
     const layerData: ILayerData = {}
     response.urls.map(async (url: string, i: number) => {
@@ -147,10 +148,9 @@ function App() {
         rarity: "normal",
       }
     })
-
-    const ref = await updateArtworkSet({ awid, layers: layerData })
-    console.log(ref)
-    console.log(awid)
+    setLayerImages(response.urls)
+    setMetaData(layerData)
+    updateArtworkSet({ awid, layers: layerData }) // use swr here
     setUploadStatus("")
   }
 
@@ -159,6 +159,8 @@ function App() {
    * after randomizing layers, the next step is to randomly assemble each layer to create new images of N size.
    */
   const randomizeLayers = async () => {
+    console.log("::-SENDING TO SERVER-::")
+    console.log(metadata)
     const response = await fetch("/api/gen", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -169,7 +171,7 @@ function App() {
       },
       // redirect: "follow", // manual, *follow, error
       // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(layerImages), // body data type must match "Content-Type" header
+      body: JSON.stringify(metadata), // body data type must match "Content-Type" header
     })
       .then((resp) => {
         if (!resp.ok) {
@@ -234,7 +236,7 @@ function App() {
                 overflowX="scroll"
                 width="100vw"
               >
-                {layerImages.map((url) => (
+                {layerImages?.map((url) => (
                   <GridItem key={url}>
                     <Image src={url} alt="Layer Image" />
                   </GridItem>
@@ -249,7 +251,7 @@ function App() {
           </FormControl>
         </Box>
       </Center>
-      <SimpleGrid columns={2}>
+      {/* <SimpleGrid columns={2}>
         {IMAGES.map((path) => (
           <Center key={path}>
             <Box
@@ -271,7 +273,7 @@ function App() {
             </Box>
           </Center>
         ))}
-      </SimpleGrid>
+      </SimpleGrid> */}
     </Box>
   )
 }
