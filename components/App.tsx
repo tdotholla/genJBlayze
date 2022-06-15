@@ -102,26 +102,31 @@ function App() {
       // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
-      .then((response) => {
-        if (!response.ok) {
-          return response
-            .text()
-            .then((result) => Promise.reject(new Error(result)))
+      .then((resp) => {
+        if (!resp.ok) {
+          return resp.text().then((result) => Promise.reject(new Error(result)))
         }
-        setUploadStatus("DISPLAYING LAYERS....")
-        return response.json()
+        setUploadStatus("FETCHING LAYERS....")
+        return resp.json()
       })
       .then((data) => data)
       .catch((err) => {
         setErrorMsg("Error Fetching Layers: " + err.message)
         console.error("error", err)
       })
+
+    console.info("::-LAYERS RESPONSE-::")
+    console.info(response)
     setLayerImages(response.urls) // parses JSON response into native JavaScript objects
     setUploadStatus("")
   }
 
-  const assembleImages = async () => {
-    await fetch("/api/gen", {
+  /**
+   * sends an array of layer urls to server, receives and returns an array of objects containing metadata about each iteration, the source layer, etc.
+   * after randomizing layers, the next step is to randomly assemble each layer to create new images of N size.
+   */
+  const randomizeLayers = async () => {
+    const response = await fetch("/api/gen", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -133,20 +138,20 @@ function App() {
       // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(layerImages), // body data type must match "Content-Type" header
     })
-      .then((response) => {
-        if (!response.ok) {
-          return response
-            .text()
-            .then((result) => Promise.reject(new Error(result)))
+      .then((resp) => {
+        if (!resp.ok) {
+          return resp.text().then((result) => Promise.reject(new Error(result)))
         }
         setUploadStatus("RANDOMIZING LAYERS....")
-        return response.json()
+        return resp.json()
       })
       .then((data) => data)
       .catch((err) => {
         setErrorMsg("Error Creating Layers: " + err.message)
         console.error("error", err)
       })
+    console.info("::-RANDOMIZATION RESPONSE-::")
+    console.info(response)
     // send full array of urls to backend
     // get urls of each layer, save to fs in certain way, then run generate script
   }
@@ -204,7 +209,7 @@ function App() {
               </Grid>
             )}
             {layerImages && (
-              <Button onClick={() => assembleImages()}>Assemble Images</Button>
+              <Button onClick={() => randomizeLayers()}>Assemble Images</Button>
             )}
 
             {errorMsg && <FormErrorMessage>{errorMsg}</FormErrorMessage>}

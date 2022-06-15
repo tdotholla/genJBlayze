@@ -4,32 +4,52 @@
 // run generate commands with params
 // upload images to store and return urls to all images
 
+import { timeStamp } from "console"
 import { convert, resize } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import path from "path"
 const maxAge = 1 * 24 * 60 * 60
 
+/**
+ *
+ * Takes an array of image urls and applies imagemagick transformations to each, before uploading them to Storage
+ * @param req request object
+ * @param res response object
+ * @returns JSON response
+ */
 const randomizeLayersHandler = async (
   req: NextApiRequest,
   res: NextApiResponse,
 ) => {
   // const db = await connectToDatabase();
   // db.createIndex("pullups", { location: "2dsphere" });
+
   const {
     //can send query params to sort & limit results
-    query: { by, limit, lat, lng },
+    body,
     method,
   } = req
-  const fileRoot = path.join(process.cwd(), "./")
+  const fileRoot = path.join(process.cwd(), "tmp/")
   const URI = "http://localhost:3000/gallery/1.png"
+  const fileName = URI.split("/")[URI.split("/").length - 1].split(".")[0]
+  // console.log(i, c, v)
+  console.log("body:", JSON.stringify(body))
+
   switch (method) {
-    case "GET":
+    case "POST":
+      // take each uri and convert them x times
+
       convert(
-        [URI, "-resize", "25%", "public/temp/kittens-small.png"],
+        [URI, "-resize", "25%", `${fileRoot}${fileName}_cv.png`],
         function (err, stdout) {
-          if (err) console.error(err)
-          console.log("stdout:", stdout)
-          res.send(JSON.stringify(`${fileRoot}public/temp/kittens-small.png`))
+          if (err) console.error(err.message)
+          res.send(
+            `<!DOCTYPE html>
+            <html>
+            File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
+            </html>
+            `,
+          )
         },
       )
       // const pullups =
