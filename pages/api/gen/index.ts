@@ -4,7 +4,7 @@
 // run generate commands with params
 // upload images to store and return urls to all images
 
-import { convert, resize } from "imagemagick"
+import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import path from "path"
 // const maxAge = 1 * 24 * 60 * 60
@@ -25,37 +25,63 @@ const randomizeLayersHandler = async (
   // if (!req.user) {
   //   return res.status(401).send('unauthenticated');
   // }
-  if (!req.body) return res.status(400).send("You must write something")
 
   const {
     //can send query params to sort & limit results
     body,
     method,
   } = req
+  const getRandomColor = () =>
+    Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .toUpperCase()
+
   const fileRoot = path.join(process.cwd(), "tmp/")
   const URI = "http://localhost:3000/gallery/1.png"
-  const fileName = URI.split("/")[URI.split("/").length - 1].split(".")[0]
+  const getFileName = (uri) =>
+    uri.split("/")[URI.split("/").length - 1].split(".")[0]
   // console.log(i, c, v)
-  console.log("body:", body)
-
+  /**
+   *   '000000': {
+   _id: 'nMLLdR6mjLAnDO-sxQtu-',
+   depthNumber: 0,
+   imageUri: 'https://storage.googleapis.com/shop-mocknstock.appspot.com/43ce5167-a478-4bc8-97ce-18dfa661e5bc.png-000000.png',
+   rarity: 'normal'
+  }
+  */
   switch (method) {
     case "POST":
       // take each uri and convert them x times
-
-      convert(
-        [URI, "-resize", "25%", `${fileRoot}${fileName}_cv.png`],
-        function (err, stdout) {
-          if (err) console.error(err.message)
-          // res.send(
-          //   `<!DOCTYPE html>
-          //   <html>
-          //   File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
-          //   </html>
-          //   `,
-          // )
-        },
-      )
-
+      if (!body) return res.status(400).send("You must write something")
+      Object.entries(body).forEach(function (item) {
+        const colorCode = item[0]
+        const { imageUri } = item[1]
+        const randomColor = getRandomColor()
+        // ▶ convert 1_B8A9F6.png -fuzz 99% -fill red2 -opaque '#2D96DD' result.png
+        convert(
+          [
+            imageUri,
+            "-fuzz",
+            "10%",
+            "-fill",
+            randomColor,
+            "-opaque",
+            "#" + colorCode,
+            `${fileRoot}${getFileName(URI)}_${randomColor}.png`,
+          ],
+          function (err, result) {
+            if (err) console.error(err.message)
+            // console.log(result)
+            // res.send(
+            //   `<!DOCTYPE html>
+            //   <html>
+            //   File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
+            //   </html>
+            //   `,
+            // )
+          },
+        )
+      })
       //     : await getPullUps(db);
       // if (response.length > 0) {
       //   // This is only safe to cache when a timeframe is defined

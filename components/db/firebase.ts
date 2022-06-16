@@ -51,7 +51,7 @@ interface ILayer {
 }
 interface IUploadedImage {
   uid?: string
-  awid: string
+  _id: string
   sourceImageUri: string | undefined
   dateTime?: string
   fuzz?: number
@@ -61,16 +61,16 @@ interface IUploadedImage {
   editions?: number
 }
 export const updateArtworkSet = async function (data: Partial<IUploadedImage>) {
-  const artworkID = data.awid ?? nanoid()
+  const _id = data._id ?? nanoid()
   const dateTime = data.dateTime ?? new Date().toISOString()
   const origData = {
-    awid: artworkID,
+    _id,
     dateTime,
   }
-  const docRef = doc(uploadsRef, artworkID)
+  const docRef = doc(uploadsRef, _id)
   console.log("submitting to db...", { ...data, ...origData })
   await setDoc(docRef, { ...origData, ...data }, { merge: true })
-  return artworkID
+  return _id
 }
 
 export const artworkFetch = async function (id: string) {

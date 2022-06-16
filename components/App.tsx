@@ -1,6 +1,5 @@
 import {
   Box,
-  SimpleGrid,
   Image,
   Center,
   Button,
@@ -61,14 +60,14 @@ function App() {
     if (userImage) {
       const imageUrl = await storeImage(userImage)
       setUploadStatus("UPLOADING DOCUMENT....")
-      const awid = await updateArtworkSet({ sourceImageUri: imageUrl })
+      const _id = await updateArtworkSet({ sourceImageUri: imageUrl })
       const metadata = {
-        _id: awid,
+        _id,
         imageUrl,
         fuzz: `${fuzzNum}%`,
         numDominantColorsToExtract: colorsNum,
       }
-      setProjectId(awid)
+      setProjectId(_id)
       setUploadStatus("GETTING LAYERS....")
       // uri && setImageURI(uri)
       imageUrl && getLayers(metadata)
@@ -92,7 +91,7 @@ function App() {
   }
 
   const getLayers = async ({
-    _id: awid,
+    _id,
     imageUrl,
     fuzz,
     numDominantColorsToExtract,
@@ -150,7 +149,7 @@ function App() {
     })
     setLayerImages(response.urls)
     setMetaData(layerData)
-    updateArtworkSet({ awid, layers: layerData }) // use swr here
+    updateArtworkSet({ _id, layers: layerData }) // use swr here
     setUploadStatus("")
   }
 
