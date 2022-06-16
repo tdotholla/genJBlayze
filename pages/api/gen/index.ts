@@ -4,6 +4,13 @@
 // run generate commands with params
 // upload images to store and return urls to all images
 
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage"
+import { fbStorage } from "../../../components/db/firebase"
 import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import path from "path"
@@ -37,10 +44,8 @@ const randomizeLayersHandler = async (
       .toUpperCase()
 
   const fileRoot = path.join(process.cwd(), "tmp/")
-  const URI = "http://localhost:3000/gallery/1.png"
   const getFileName = (uri) =>
-    uri.split("/")[URI.split("/").length - 1].split(".")[0]
-  // console.log(i, c, v)
+    uri.split("/")[uri.split("/").length - 1].split(".")[0]
   /**
    *   '000000': {
    _id: 'nMLLdR6mjLAnDO-sxQtu-',
@@ -57,6 +62,9 @@ const randomizeLayersHandler = async (
         const colorCode = item[0]
         const { imageUri } = item[1]
         const randomColor = getRandomColor()
+        const filePath = `${fileRoot}${getFileName(
+          imageUri,
+        )}_${randomColor}.png`
         // ▶ convert 1_B8A9F6.png -fuzz 99% -fill red2 -opaque '#2D96DD' result.png
         convert(
           [
@@ -64,14 +72,24 @@ const randomizeLayersHandler = async (
             "-fuzz",
             "10%",
             "-fill",
-            randomColor,
+            "#" + randomColor,
             "-opaque",
             "#" + colorCode,
-            `${fileRoot}${getFileName(URI)}_${randomColor}.png`,
+            // filePath,
+            "-",
           ],
-          function (err, result) {
-            if (err) console.error(err.message)
-            // console.log(result)
+          async function (err, stdout) {
+            if (err) throw err
+            const storageRef = ref(
+              fbStorage,
+              `/uploads/${getFileName(imageUri)}.png`,
+            )
+            const buf = Buffer.from(stdout)
+            await uploadBytes(storageRef, buf, {
+              contentType: "image/png",
+            })
+            const imageURI = await getDownloadURL(storageRef)
+            console.log(imageURI)
             // res.send(
             //   `<!DOCTYPE html>
             //   <html>

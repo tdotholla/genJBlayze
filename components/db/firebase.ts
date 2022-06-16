@@ -24,7 +24,7 @@ const firebaseConfig = {
 const appRef = initializeApp(firebaseConfig)
 // export const analytics = getAnalytics(appRef)
 const fsdb = initializeFirestore(appRef, {})
-const fbStorage = getStorage(appRef)
+export const fbStorage = getStorage(appRef)
 // useDeviceLanguage(getAuth())
 const uploadsRef = collection(fsdb, "UPLOADS")
 
