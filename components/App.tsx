@@ -15,9 +15,13 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react"
+import { getDownloadURL } from "firebase/storage"
 import { nanoid } from "nanoid"
+import { useEffect } from "react"
 import { BaseSyntheticEvent, useState } from "react"
 import { updateArtworkSet, storeImage } from "./db/firebase"
+import { ILayerData, IUploadSettings } from "./types"
+import { setRef } from "./utils"
 
 //get length
 const BASE_PATH = `/gallery/`
@@ -40,21 +44,7 @@ function App() {
   const [fuzzNum, setFuzzNum] = useState(0)
   const [colorsNum, setColorsNum] = useState(0)
 
-  interface IUploadSettings {
-    _id: string
-    imageUrl: string | undefined
-    fuzz: string
-    numDominantColorsToExtract: number
-  }
-  interface ILayerData {
-    [color: string]: {
-      _id: string
-      depthNumber: number
-      imageUri: string
-      rarity: string
-    }
-  }
-
+  useEffect(() => {})
   const onClickUpload = async () => {
     setUploadStatus("STORING IMAGE...")
     if (userImage) {
@@ -150,7 +140,19 @@ function App() {
     setLayerImages(response.urls)
     setMetaData(layerData)
     updateArtworkSet({ _id, layers: layerData }) // use swr here
-    setUploadStatus("")
+  }
+  const getURIArray = async () => {
+    if (uploadStatus === "FIN") {
+      const uris: string[] = []
+      for (const color in metadata) {
+        if (Object.prototype.hasOwnProperty.call(metadata, color)) {
+          const element = metadata[color]
+          const downloadURI = await getDownloadURL(setRef(element.imageUri))
+          uris.push(downloadURI)
+        }
+      }
+      return uris
+    }
   }
 
   /**
@@ -160,6 +162,7 @@ function App() {
   const randomizeLayers = async () => {
     console.log("::-SENDING TO SERVER-::")
     console.log(metadata)
+    //convert images but ideally recieve downloadURLs when finished...
     const response = await fetch("/api/gen", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -184,8 +187,14 @@ function App() {
         setErrorMsg("Error Creating Layers: " + err.message)
         console.error("error", err)
       })
+
     console.info("::-RANDOMIZATION RESPONSE-::")
-    console.info(response)
+    setUploadStatus("FIN")
+    const array = await getURIArray()
+    console.log(array)
+
+    //check status and get URLs for randomized images, then upload to db, display results in view?
+    // then generate random images from layerImages
   }
   return (
     <Box className="App">
@@ -205,7 +214,9 @@ function App() {
               <Box>
                 <Img src={previewURI} border={"1px solid red"} p={9} />
                 <Divider w={"80%"} />
-                <FormLabel width={"50%"}>Amount of Fuzz (0-100%)</FormLabel>
+                <FormLabel width={"50%"} id="fuzzNum">
+                  Amount of Fuzz (0-100%)
+                </FormLabel>
                 <Input
                   id="fuzzNum"
                   type="number"
@@ -242,8 +253,14 @@ function App() {
                 ))}
               </Grid>
             )}
-            {layerImages && (
-              <Button onClick={() => randomizeLayers()}>Assemble Images</Button>
+            {layerImages.length > 0 && (
+              <Button
+                onClick={() => {
+                  randomizeLayers()
+                }}
+              >
+                Assemble Images
+              </Button>
             )}
 
             {errorMsg && <FormErrorMessage>{errorMsg}</FormErrorMessage>}

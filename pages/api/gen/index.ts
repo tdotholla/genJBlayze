@@ -4,17 +4,14 @@
 // run generate commands with params
 // upload images to store and return urls to all images
 
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  uploadString,
-} from "firebase/storage"
+import { getDownloadURL, ref, uploadString } from "firebase/storage"
 import { fbStorage } from "../../../components/db/firebase"
+import { ILayerData } from "../../../components/types"
+import { getFileName } from "../../../components/utils"
 import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import path from "path"
-// const maxAge = 1 * 24 * 60 * 60
+const maxAge = 1 * 24 * 60 * 60
 
 /**
  *
@@ -44,8 +41,7 @@ const randomizeLayersHandler = async (
       .toUpperCase()
 
   const fileRoot = path.join(process.cwd(), "tmp/")
-  const getFileName = (uri) =>
-    uri.split("/")[uri.split("/").length - 1].split(".")[0]
+
   /**
    *   '000000': {
    _id: 'nMLLdR6mjLAnDO-sxQtu-',
@@ -58,14 +54,13 @@ const randomizeLayersHandler = async (
     case "POST":
       // take each uri and convert them x times
       if (!body) return res.status(400).send("You must write something")
-      Object.entries(body).forEach(function (item) {
+      Object.entries(body as ILayerData).forEach(async function (item, i, a) {
         const colorCode = item[0]
         const { imageUri } = item[1]
         const randomColor = getRandomColor()
         const filePath = `${fileRoot}${getFileName(
           imageUri,
         )}_${randomColor}.png`
-        // ▶ convert 1_B8A9F6.png -fuzz 99% -fill red2 -opaque '#2D96DD' result.png
         convert(
           [
             imageUri,
@@ -75,37 +70,46 @@ const randomizeLayersHandler = async (
             "#" + randomColor,
             "-opaque",
             "#" + colorCode,
-            // filePath,
-            "-",
+            // filePath, // creates a file
+            "-", // use stdout
           ],
-          async function (err, stdout) {
-            if (err) throw err
+          async (err, stdout) => {
+            if (err) console.log(err)
             const storageRef = ref(
               fbStorage,
               `/uploads/${getFileName(imageUri)}.png`,
             )
-            const buf = Buffer.from(stdout)
-            await uploadBytes(storageRef, buf, {
-              contentType: "image/png",
-            })
-            const imageURI = await getDownloadURL(storageRef)
-            console.log(imageURI)
-            // res.send(
-            //   `<!DOCTYPE html>
-            //   <html>
-            //   File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
-            //   </html>
-            //   `,
-            // )
+            if (stdout) {
+              const bufString = Buffer.from(stdout, "binary").toString("base64")
+              await uploadString(storageRef, bufString, "base64", {
+                contentType: "image/png",
+              })
+            } else {
+              console.log(filePath)
+              // read file and upload?
+              // uploadBytes(storageRef, filePath)
+            }
           },
         )
+        //return array of refIDs or refPaths/URls so we can get downloadURLs in next step and store them to firebase db
+
+        // const newImageUri = await getDownloadURL(createRef(imageUri))
+        // console.log("newImageUri:", newImageUri)
+        // randomizedUris.push(newImageUri)
+        if (i == a.length - 1) {
+          // This is only safe to cache when a timeframe is defined
+          res.setHeader("cache-control", `public, max-age=${maxAge}`)
+          // console.log(randomizedUris)
+          res.send({ ok: true })
+          //   res.send(
+          //       `<!DOCTYPE html>
+          //       <html>
+          //       File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
+          //       </html>
+          //       `,)
+        }
       })
-      //     : await getPullUps(db);
-      // if (response.length > 0) {
-      //   // This is only safe to cache when a timeframe is defined
-      //   res.setHeader("cache-control", `public, max-age=${maxAge}`);
-      // }
-      res.send("dat uploaded successfully")
+      // res.send("dat uploaded successfully")
 
       break
     case "GET":
