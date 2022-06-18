@@ -194,9 +194,10 @@ function App() {
     //response is an array or array of varieties, each with an array of varieties per layer
     response?.forEach(
       (layer: ILayerData["varieties"]["varieties"], i: number) => {
-        const colorIndex = layer[0].origColorCode //typescript is wrong here
-        metadata[colorIndex].varieties = {
-          [layer[0].newColorCode]: layer,
+        const colorIndex = layer[i].origColorCode
+        // need to fix type of metadata here to accept the right type as index
+        ;(metadata as any)[colorIndex].varieties = {
+          [layer[i].newColorCode]: layer,
         }
       },
     )
@@ -296,11 +297,15 @@ function App() {
                 overflowX="scroll"
                 width="100vw"
               >
-                {/* {varietyMetadata?.map((layer: any) => (
-                  <GridItem key={layer.imageUri}>
-                    <Image src={layer.imageUri} alt="Layer Image" />
-                  </GridItem>
-                ))} */}
+                {varietyMetadata?.map((layer: any) =>
+                  layer.map((variety: any) => (
+                    <GridItem
+                      key={`${variety.imageUri}_${variety.origColorCode}_${variety.newColorCode}`}
+                    >
+                      <Image src={variety.imageUri} alt="Layer Image" />
+                    </GridItem>
+                  )),
+                )}
               </Grid>
             )}
 
