@@ -64,7 +64,6 @@ const randomizeLayersHandler = async (
       // take each uri and convert them x times
       if (!body) return res.status(400).send("You must write something")
       // need a promise.all array here
-
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item, i) {
           const colorCode = item[0]
@@ -88,7 +87,6 @@ const randomizeLayersHandler = async (
               // uploadBytes(storageRef, filePath)
             }
           }
-
           return konvert([
             imageUri,
             "-fuzz",
@@ -99,12 +97,17 @@ const randomizeLayersHandler = async (
             "#" + colorCode,
             // filePath, // creates a file
             "-", // use stdout
-          ]).then(async (binString) => ({
-            _id: nanoid(),
-            origColorCode: colorCode,
-            newColorCode: snakeCaseRGB(randomColor),
-            imageUri: await uploadImage(binString as BinaryType),
-          }))
+          ]).then(
+            async (binString) =>
+              await Promise.all(
+                Array.from(Array(colorVariety)).map(async () => ({
+                  _id: nanoid(),
+                  origColorCode: colorCode,
+                  newColorCode: snakeCaseRGB(randomColor),
+                  imageUri: await uploadImage(binString as BinaryType),
+                })),
+              ),
+          )
           //set item[1].varieties[newColorCode]  = this....?
 
           //   const uriArray = Promise.all(
@@ -127,7 +130,6 @@ const randomizeLayersHandler = async (
       // This is only safe to cache when a timeframe is defined
       if ((await randomizedUris).length > 0) {
         res.setHeader("cache-control", `public, max-age=${maxAge}`)
-        // console.log(randomizedUris)
 
         res.send(JSON.stringify(await randomizedUris))
       } else {

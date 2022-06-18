@@ -163,7 +163,7 @@ function App() {
     console.log("::-SENDING TO SERVER-::")
     console.log(metadata)
     //convert images but ideally recieve downloadURLs when finished...
-    const response = await fetch("/api/gen", {
+    const response = (await fetch("/api/gen", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -186,26 +186,26 @@ function App() {
       .catch((err) => {
         setErrorMsg("Error Creating Layers: " + err.message)
         console.error("error", err)
-      })
+      })) as ILayerData["varieties"]["varieties"][]
 
     console.info("::-RANDOMIZATION RESPONSE-::")
     console.log(response)
-    response?.length > 0 && setVarietyMetadata(response)
+    response?.length > 0 && setVarietyMetadata(response as any)
+    //response is an array or array of varieties, each with an array of varieties per layer
     response?.forEach(
-      (layer: ILayerData["varieties"]["varieties"]["origColorCode"]) => {
-        metadata[layer.origColorCode].varieties = {
-          [layer.newColorCode]: layer,
+      (layer: ILayerData["varieties"]["varieties"], i: number) => {
+        const colorIndex = layer[0].origColorCode //typescript is wrong here
+        metadata[colorIndex].varieties = {
+          [layer[0].newColorCode]: layer,
         }
       },
     )
-    console.log(metadata)
     //can i upload new stuff to layers and have it merge, or willi t overwrite layers:
     updateArtworkSet({ _id: projectId, layers: metadata }) // use swr here
 
     //check status and get URLs for randomized images, then upload to db, display results in view?
     // then generate random images from layerImages
   }
-
   return (
     <Box className="App">
       <Center marginBlock="10">
@@ -269,11 +269,14 @@ function App() {
                 <FormLabel># of Colors</FormLabel>
                 <Input
                   type="number"
+                  min={1}
                   onChange={(e) => {
                     const newMeta = metadata
-                    Object.values(newMeta)[0].colorVariety = Number(
-                      e.currentTarget.value,
-                    )
+                    Object.entries(newMeta).forEach((iteration) => {
+                      newMeta[iteration[0]].colorVariety = Number(
+                        e.currentTarget.value,
+                      )
+                    })
                     setMetaData(newMeta)
                   }}
                 />
