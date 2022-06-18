@@ -190,11 +190,16 @@ function App() {
 
     console.info("::-RANDOMIZATION RESPONSE-::")
     console.log(response)
-    response && response.length > 0 && setVarietyMetadata(response)
+    response?.length > 0 && setVarietyMetadata(response)
     // const layerData = metadata
-    response.foreach(
-      (layer: any) =>
-        (metadata[layer.oldColorCode].varieties[layer.newColorCode] = layer),
+    response?.forEach(
+      (layer: ILayerData["varieties"]["varieties"]["varieties"]) => {
+        console.log(layer.origColorCode)
+
+        metadata[layer.origColorCode].varieties = {
+          [layer.newColorCode]: layer,
+        }
+      },
     )
     console.log(metadata)
     //can i upload new stuff to layers and have it merge, or willi t overwrite layers:

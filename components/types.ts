@@ -13,7 +13,7 @@ export interface ILayerData {
     imageUri: string
     rarity: string
     varieties: {
-      [color: string]: {
+      [origColorCode: string]: {
         _id: string
         origColorCode: string
         newColorCode: string

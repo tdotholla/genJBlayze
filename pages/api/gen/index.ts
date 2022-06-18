@@ -48,7 +48,7 @@ const randomizeLayersHandler = async (
   }
   // const fileRoot = path.join(process.cwd(), "tmp/")
   const snakeCaseRGB = (color: string): string =>
-    color.slice(0, -1).replace(/[(,]/, "_")
+    color.slice(0, -1).replace(/[(,.]/g, "_")
   /**
    *   '000000': {
    _id: 'nMLLdR6mjLAnDO-sxQtu-',
@@ -58,7 +58,7 @@ const randomizeLayersHandler = async (
   }
   */
   let randomizedUris = []
-  let newobj = {}
+  // let newobj = {}
   switch (method) {
     case "POST":
       // take each uri and convert them x times
@@ -89,7 +89,7 @@ const randomizeLayersHandler = async (
             }
           }
 
-          const binString = (await konvert([
+          return konvert([
             imageUri,
             "-fuzz",
             "90%",
@@ -99,10 +99,14 @@ const randomizeLayersHandler = async (
             "#" + colorCode,
             // filePath, // creates a file
             "-", // use stdout
-          ])) as BinaryType
+          ]).then(async (binString) => ({
+            _id: nanoid(),
+            origColorCode: colorCode,
+            newColorCode: snakeCaseRGB(randomColor),
+            imageUri: await uploadImage(binString as BinaryType),
+          }))
           //set item[1].varieties[newColorCode]  = this....?
 
-          return await uploadImage(binString)
           //   const uriArray = Promise.all(
           //     Array(colorVariety).map(async () => await uploadImage(binString)),
           //   )
