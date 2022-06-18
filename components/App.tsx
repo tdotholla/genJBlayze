@@ -191,7 +191,6 @@ function App() {
     console.info("::-RANDOMIZATION RESPONSE-::")
     console.log(response)
     response?.length > 0 && setVarietyMetadata(response)
-    // const layerData = metadata
     response?.forEach(
       (layer: ILayerData["varieties"]["varieties"]["origColorCode"]) => {
         metadata[layer.origColorCode].varieties = {
