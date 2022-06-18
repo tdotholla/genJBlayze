@@ -43,7 +43,8 @@ const randomizeLayersHandler = async (
   //     .toUpperCase()
   const getRandomRGBA = () => {
     const getNum = () => Math.floor(Math.random() * 256)
-    const getOpacity = () => Math.random().toPrecision(2)
+    const getOpacity = () =>
+      (Math.floor(Math.random() * (100 - 50 + 1) + 50) / 100).toPrecision(2) //btwn .5-1
     return `rgba(${getNum()},${getNum()},${getNum()},${getOpacity()})`
   }
   // const fileRoot = path.join(process.cwd(), "tmp/")
@@ -68,46 +69,51 @@ const randomizeLayersHandler = async (
         Object.entries(body as ILayerData).map(async function (item, i) {
           const colorCode = item[0]
           const { imageUri, colorVariety } = item[1]
-          const randomColor = getRandomRGBA()
-          const filePath = `${getFileName(imageUri)}_${colorCode}_${i}.png`
 
-          const uploadImage = async (binaryString: BinaryType) => {
-            const storageRef = ref(fbStorage, `/uploads/${filePath}`)
-            if (binaryString) {
-              const bufString = Buffer.from(binaryString, "binary").toString(
-                "base64",
-              )
-              await uploadString(storageRef, bufString, "base64", {
-                contentType: "image/png",
-              })
-              return await getDownloadURL(storageRef)
-            } else {
-              console.log(filePath)
-              // read file and upload?
-              // uploadBytes(storageRef, filePath)
-            }
-          }
-          return konvert([
-            imageUri,
-            "-fuzz",
-            "90%",
-            "-fill",
-            randomColor,
-            "-opaque",
-            "#" + colorCode,
-            // filePath, // creates a file
-            "-", // use stdout
-          ]).then(
-            async (binString) =>
-              await Promise.all(
-                Array.from(Array(colorVariety)).map(async () => ({
-                  _id: nanoid(),
-                  origColorCode: colorCode,
-                  newColorCode: snakeCaseRGB(randomColor),
-                  imageUri: await uploadImage(binString as BinaryType),
-                })),
-              ),
+          return await Promise.all(
+            Array.from(Array(colorVariety)).map(async () => {
+              const randomColor = getRandomRGBA()
+              const snakedColor = snakeCaseRGB(randomColor)
+              const filePath = `${getFileName(
+                imageUri,
+              )}_${colorCode}-${snakedColor}_${i}_of_${colorVariety}.png`
+              const uploadImage = async (binaryString: BinaryType) => {
+                const storageRef = ref(fbStorage, `/uploads/${filePath}`)
+                if (binaryString) {
+                  const bufString = Buffer.from(
+                    binaryString,
+                    "binary",
+                  ).toString("base64")
+                  await uploadString(storageRef, bufString, "base64", {
+                    contentType: "image/png",
+                  })
+                  return await getDownloadURL(storageRef)
+                } else {
+                  console.log(filePath)
+                  // read file and upload?
+                  // uploadBytes(storageRef, filePath)
+                }
+              }
+
+              return await konvert([
+                imageUri,
+                "-fuzz",
+                "90%",
+                "-fill",
+                randomColor,
+                "-opaque",
+                "#" + colorCode,
+                // filePath, // creates a file
+                "-", // use stdout
+              ]).then(async (binString) => ({
+                _id: nanoid(),
+                origColorCode: colorCode,
+                newColorCode: snakedColor,
+                imageUri: await uploadImage(binString as BinaryType),
+              }))
+            }),
           )
+
           //set item[1].varieties[newColorCode]  = this....?
 
           //   const uriArray = Promise.all(
