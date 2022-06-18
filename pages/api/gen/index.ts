@@ -11,8 +11,10 @@ import { getFileName } from "../../../components/utils"
 import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import path from "path"
-const maxAge = 1 * 24 * 60 * 60
+import { promisify } from "util"
 
+const maxAge = 1 * 24 * 60 * 60
+const konvert = promisify(convert)
 /**
  *
  * Takes an array of image urls and applies imagemagick transformations to each, before uploading them to Storage
@@ -35,12 +37,16 @@ const randomizeLayersHandler = async (
     body,
     method,
   } = req
-  const getRandomColor = () =>
-    Math.floor(Math.random() * 16777215)
-      .toString(16)
-      .toUpperCase()
-
-  const fileRoot = path.join(process.cwd(), "tmp/")
+  // const getRandomHexColor = () =>
+  //   Math.floor(Math.random() * 16777215)
+  //     .toString(16)
+  //     .toUpperCase()
+  const getRandomRGBA = () => {
+    const getNum = () => Math.floor(Math.random() * 256)
+    const getOpacity = () => Math.random().toPrecision(2)
+    return `rgba(${getNum()},${getNum()},${getNum()},${getOpacity()})`
+  }
+  // const fileRoot = path.join(process.cwd(), "tmp/")
 
   /**
    *   '000000': {
@@ -50,65 +56,66 @@ const randomizeLayersHandler = async (
    rarity: 'normal'
   }
   */
+  let randomizedUris = []
   switch (method) {
     case "POST":
       // take each uri and convert them x times
       if (!body) return res.status(400).send("You must write something")
-      Object.entries(body as ILayerData).forEach(async function (item, i, a) {
-        const colorCode = item[0]
-        const { imageUri } = item[1]
-        const randomColor = getRandomColor()
-        const filePath = `${fileRoot}${getFileName(
-          imageUri,
-        )}_${randomColor}.png`
-        convert(
-          [
-            imageUri,
-            "-fuzz",
-            "10%",
-            "-fill",
-            "#" + randomColor,
-            "-opaque",
-            "#" + colorCode,
-            // filePath, // creates a file
-            "-", // use stdout
-          ],
-          async (err, stdout) => {
-            if (err) console.log(err)
-            const storageRef = ref(
-              fbStorage,
-              `/uploads/${getFileName(imageUri)}.png`,
-            )
-            if (stdout) {
-              const bufString = Buffer.from(stdout, "binary").toString("base64")
+      // need a promise.all array here
+      randomizedUris = Promise.all(
+        Object.entries(body as ILayerData).map(async function (item, i) {
+          const colorCode = item[0]
+          const { imageUri } = item[1]
+          const randomColor = getRandomRGBA()
+          const filePath = `${getFileName(imageUri)}_${colorCode}_${i}.png`
+
+          const uploadImage = async (binaryString: BinaryType) => {
+            const storageRef = ref(fbStorage, `/uploads/${filePath}`)
+            if (binaryString) {
+              const bufString = Buffer.from(binaryString, "binary").toString(
+                "base64",
+              )
               await uploadString(storageRef, bufString, "base64", {
                 contentType: "image/png",
               })
+              return await getDownloadURL(storageRef)
             } else {
               console.log(filePath)
               // read file and upload?
               // uploadBytes(storageRef, filePath)
             }
-          },
-        )
-        //return array of refIDs or refPaths/URls so we can get downloadURLs in next step and store them to firebase db
+          }
 
-        // const newImageUri = await getDownloadURL(createRef(imageUri))
-        // console.log("newImageUri:", newImageUri)
-        // randomizedUris.push(newImageUri)
-        if (i == a.length - 1) {
-          // This is only safe to cache when a timeframe is defined
-          res.setHeader("cache-control", `public, max-age=${maxAge}`)
-          // console.log(randomizedUris)
-          res.send({ ok: true })
-          //   res.send(
-          //       `<!DOCTYPE html>
-          //       <html>
-          //       File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
-          //       </html>
-          //       `,)
-        }
-      })
+          const binString = (await konvert([
+            imageUri,
+            "-fuzz",
+            "90%",
+            "-fill",
+            randomColor,
+            "-opaque",
+            "#" + colorCode,
+            // filePath, // creates a file
+            "-", // use stdout
+          ])) as BinaryType
+
+          return await uploadImage(binString)
+        }),
+      )
+      //return array of refIDs or refPaths/URls so we can get downloadURLs in next step and store them to firebase db
+      // This is only safe to cache when a timeframe is defined
+      if ((await randomizedUris).length > 0) {
+        res.setHeader("cache-control", `public, max-age=${maxAge}`)
+        // console.log(randomizedUris)
+        res.send(JSON.stringify(await randomizedUris))
+      } else {
+        res.statusCode = 405
+      }
+      //   res.send(
+      //       `<!DOCTYPE html>
+      //       <html>
+      //       File saved at: <a href="file://${fileName}_cv.png">${fileRoot}${fileName}_cv.png</a>
+      //       </html>
+      //       `,)
       // res.send("dat uploaded successfully")
 
       break

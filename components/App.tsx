@@ -15,13 +15,10 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react"
-import { getDownloadURL } from "firebase/storage"
 import { nanoid } from "nanoid"
-import { useEffect } from "react"
 import { BaseSyntheticEvent, useState } from "react"
 import { updateArtworkSet, storeImage } from "./db/firebase"
 import { ILayerData, IUploadSettings } from "./types"
-import { setRef } from "./utils"
 
 //get length
 const BASE_PATH = `/gallery/`
@@ -40,11 +37,11 @@ function App() {
   const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
   const [layerImages, setLayerImages] = useState([])
+  const [layerUris, setLayerUris] = useState([])
   const [metadata, setMetaData] = useState({} as ILayerData)
   const [fuzzNum, setFuzzNum] = useState(0)
   const [colorsNum, setColorsNum] = useState(0)
 
-  useEffect(() => {})
   const onClickUpload = async () => {
     setUploadStatus("STORING IMAGE...")
     if (userImage) {
@@ -141,20 +138,6 @@ function App() {
     setMetaData(layerData)
     updateArtworkSet({ _id, layers: layerData }) // use swr here
   }
-  const getURIArray = async () => {
-    if (uploadStatus === "FIN") {
-      const uris: string[] = []
-      for (const color in metadata) {
-        if (Object.prototype.hasOwnProperty.call(metadata, color)) {
-          const element = metadata[color]
-          const downloadURI = await getDownloadURL(setRef(element.imageUri))
-          uris.push(downloadURI)
-        }
-      }
-      return uris
-    }
-  }
-
   /**
    * sends an array of layer urls to server, receives and returns an array of objects containing metadata about each iteration, the source layer, etc.
    * after randomizing layers, the next step is to randomly assemble each layer to create new images of N size.
@@ -189,9 +172,7 @@ function App() {
       })
 
     console.info("::-RANDOMIZATION RESPONSE-::")
-    setUploadStatus("FIN")
-    const array = await getURIArray()
-    console.log(array)
+    response && response.length > 0 && setLayerUris(response)
 
     //check status and get URLs for randomized images, then upload to db, display results in view?
     // then generate random images from layerImages
@@ -261,6 +242,20 @@ function App() {
               >
                 Assemble Images
               </Button>
+            )}
+            {layerUris?.length > 0 && (
+              <Grid
+                templateColumns="repeat(3, 1fr)"
+                gap={5}
+                overflowX="scroll"
+                width="100vw"
+              >
+                {layerUris?.map((url) => (
+                  <GridItem key={url}>
+                    <Image src={url} alt="Layer Image" />
+                  </GridItem>
+                ))}
+              </Grid>
             )}
 
             {errorMsg && <FormErrorMessage>{errorMsg}</FormErrorMessage>}
