@@ -37,7 +37,7 @@ function App() {
   const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
   const [layerImages, setLayerImages] = useState([])
-  const [layerUris, setLayerUris] = useState([])
+  const [varietyMetadata, setVarietyMetadata] = useState([])
   const [metadata, setMetaData] = useState({} as ILayerData)
   const [fuzzNum, setFuzzNum] = useState(0)
   const [colorsNum, setColorsNum] = useState(0)
@@ -52,7 +52,7 @@ function App() {
         _id,
         imageUrl,
         fuzz: `${fuzzNum}%`,
-        numDominantColorsToExtract: colorsNum,
+        numDominantColorsToExtract: 6,
       }
       setProjectId(_id)
       setUploadStatus("GETTING LAYERS....")
@@ -125,18 +125,35 @@ function App() {
     console.info(response)
     // setLayerImages(response.urls) // parses JSON response into native JavaScript objects
 
-    const layerData: ILayerData = {}
-    response.urls.map(async (url: string, i: number) => {
-      layerData[response.dominantColors[i].hexCode] = {
-        _id: await nanoid(),
-        depthNumber: i,
-        imageUri: url,
-        rarity: "normal",
-      }
-    })
+    // const layerData: ILayerData = response.urls.map(
+    //   (url: string, i: number) => ({
+    //     hexCode: response.dominantColors[i].hexCode,
+    //     _id: nanoid(),
+    //     depthNumber: i,
+    //     imageUri: url,
+    //     rarity: "normal",
+    //     colorVariety: 0,
+    //   }),
+    // )
+    const layerData: ILayerData = response.urls.reduce(
+      (obj: any, url: string, i: number) => {
+        obj[response.dominantColors[i].hexCode] = {
+          _id: nanoid(),
+          depthNumber: i,
+          imageUri: url,
+          rarity: "normal",
+          colorVariety: 0,
+          varieties: {
+            // "rgba255_255_255_1": {}
+          },
+        }
+        return obj
+      },
+      {},
+    )
     setLayerImages(response.urls)
     setMetaData(layerData)
-    updateArtworkSet({ _id, layers: layerData }) // use swr here
+    projectId && (await updateArtworkSet({ _id: projectId, layers: layerData })) // use swr here
   }
   /**
    * sends an array of layer urls to server, receives and returns an array of objects containing metadata about each iteration, the source layer, etc.
@@ -172,11 +189,21 @@ function App() {
       })
 
     console.info("::-RANDOMIZATION RESPONSE-::")
-    response && response.length > 0 && setLayerUris(response)
+    console.log(response)
+    response && response.length > 0 && setVarietyMetadata(response)
+    // const layerData = metadata
+    response.foreach(
+      (layer: any) =>
+        (metadata[layer.oldColorCode].varieties[layer.newColorCode] = layer),
+    )
+    console.log(metadata)
+    //can i upload new stuff to layers and have it merge, or willi t overwrite layers:
+    updateArtworkSet({ _id: projectId, layers: metadata }) // use swr here
 
     //check status and get URLs for randomized images, then upload to db, display results in view?
     // then generate random images from layerImages
   }
+
   return (
     <Box className="App">
       <Center marginBlock="10">
@@ -195,7 +222,7 @@ function App() {
               <Box>
                 <Img src={previewURI} border={"1px solid red"} p={9} />
                 <Divider w={"80%"} />
-                <FormLabel width={"50%"} id="fuzzNum">
+                <FormLabel width={"50%"} htmlFor="fuzzNum">
                   Amount of Fuzz (0-100%)
                 </FormLabel>
                 <Input
@@ -206,14 +233,15 @@ function App() {
                   step={10}
                   onChange={(ev) => setFuzzNum(Number(ev.target.value))}
                 />
-                <FormLabel width={"50%"}>Amount of Colors (layers)</FormLabel>
+                <br />
+                {/* <FormLabel width={"50%"}>Amount of Colors (layers)</FormLabel>
                 <Input
                   id="colorsNum"
                   type="number"
                   min={2}
                   max={20}
                   onChange={(ev) => setColorsNum(Number(ev.target.value))}
-                />
+                /> */}
                 <Button onClick={onClickUpload}>Get Layers</Button>
                 <FormHelperText>{uploadStatus}</FormHelperText>
                 {uploadStatus && <Progress size="xs" isIndeterminate />}
@@ -235,26 +263,39 @@ function App() {
               </Grid>
             )}
             {layerImages.length > 0 && (
-              <Button
-                onClick={() => {
-                  randomizeLayers()
-                }}
-              >
-                Assemble Images
-              </Button>
+              <Box>
+                <FormLabel># of Colors</FormLabel>
+                <Input
+                  type="number"
+                  onChange={(e) => {
+                    const newMeta = metadata
+                    Object.values(newMeta)[0].colorVariety = Number(
+                      e.currentTarget.value,
+                    )
+                    setMetaData(newMeta)
+                  }}
+                />
+                <Button
+                  onClick={() => {
+                    randomizeLayers()
+                  }}
+                >
+                  Randomize Colors
+                </Button>
+              </Box>
             )}
-            {layerUris?.length > 0 && (
+            {varietyMetadata?.length > 0 && (
               <Grid
                 templateColumns="repeat(3, 1fr)"
                 gap={5}
                 overflowX="scroll"
                 width="100vw"
               >
-                {layerUris?.map((url) => (
-                  <GridItem key={url}>
-                    <Image src={url} alt="Layer Image" />
+                {/* {varietyMetadata?.map((layer: any) => (
+                  <GridItem key={layer.imageUri}>
+                    <Image src={layer.imageUri} alt="Layer Image" />
                   </GridItem>
-                ))}
+                ))} */}
               </Grid>
             )}
 

@@ -68,7 +68,7 @@ export const updateArtworkSet = async function (data: Partial<IUploadedImage>) {
     dateTime,
   }
   const docRef = doc(uploadsRef, _id)
-  console.log("submitting to db...", { ...data, ...origData })
+  console.log("submitting to db...", { ...origData, ...data })
   await setDoc(docRef, { ...origData, ...data }, { merge: true })
   return _id
 }

@@ -10,7 +10,7 @@ import { ILayerData } from "../../../components/types"
 import { getFileName } from "../../../components/utils"
 import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
-import path from "path"
+import { nanoid } from "nanoid"
 import { promisify } from "util"
 
 const maxAge = 1 * 24 * 60 * 60
@@ -47,7 +47,8 @@ const randomizeLayersHandler = async (
     return `rgba(${getNum()},${getNum()},${getNum()},${getOpacity()})`
   }
   // const fileRoot = path.join(process.cwd(), "tmp/")
-
+  const snakeCaseRGB = (color: string): string =>
+    color.slice(0, -1).replace(/[(,]/, "_")
   /**
    *   '000000': {
    _id: 'nMLLdR6mjLAnDO-sxQtu-',
@@ -57,15 +58,17 @@ const randomizeLayersHandler = async (
   }
   */
   let randomizedUris = []
+  let newobj = {}
   switch (method) {
     case "POST":
       // take each uri and convert them x times
       if (!body) return res.status(400).send("You must write something")
       // need a promise.all array here
+
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item, i) {
           const colorCode = item[0]
-          const { imageUri } = item[1]
+          const { imageUri, colorVariety } = item[1]
           const randomColor = getRandomRGBA()
           const filePath = `${getFileName(imageUri)}_${colorCode}_${i}.png`
 
@@ -97,8 +100,23 @@ const randomizeLayersHandler = async (
             // filePath, // creates a file
             "-", // use stdout
           ])) as BinaryType
+          //set item[1].varieties[newColorCode]  = this....?
 
           return await uploadImage(binString)
+          //   const uriArray = Promise.all(
+          //     Array(colorVariety).map(async () => await uploadImage(binString)),
+          //   )
+          //   if ((await uriArray).length > 0) {
+          //     console.log(await uriArray)
+          //     return await uriArray
+          //   }
+          //   // {
+          //   //   item[1].varieties[snakeCaseRGB(randomColor)] = {
+          //   //     _id: nanoid(),
+          //   //     origColorCode: colorCode,
+          //   //     newColorCode: snakeCaseRGB(randomColor),
+          //   //     imageUri:
+          //   // }
         }),
       )
       //return array of refIDs or refPaths/URls so we can get downloadURLs in next step and store them to firebase db
@@ -106,6 +124,7 @@ const randomizeLayersHandler = async (
       if ((await randomizedUris).length > 0) {
         res.setHeader("cache-control", `public, max-age=${maxAge}`)
         // console.log(randomizedUris)
+
         res.send(JSON.stringify(await randomizedUris))
       } else {
         res.statusCode = 405
