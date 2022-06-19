@@ -68,17 +68,22 @@ const randomizeLayersHandler = async (
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item, i) {
           const colorCode = item[0]
-          const { imageUri, colorVariety } = item[1]
+          const { imageUri, colorVariety, _rid } = item[1]
 
           return await Promise.all(
             Array.from(Array(colorVariety)).map(async () => {
               const randomColor = getRandomRGBA()
               const snakedColor = snakeCaseRGB(randomColor)
-              const filePath = `${getFileName(
-                imageUri,
-              )}_${colorCode}-${snakedColor}_${i}_of_${colorVariety}.png`
+              const filePath =
+                imageUri &&
+                `${getFileName(
+                  imageUri,
+                )}_${colorCode}-${snakedColor}_${i}_of_${colorVariety}.png`
               const uploadImage = async (binaryString: BinaryType) => {
-                const storageRef = ref(fbStorage, `/uploads/${filePath}`)
+                const storageRef = ref(
+                  fbStorage,
+                  `/uploads/${_rid}/${filePath}`,
+                )
                 if (binaryString) {
                   const bufString = Buffer.from(
                     binaryString,

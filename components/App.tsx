@@ -18,7 +18,7 @@ import {
 import { nanoid } from "nanoid"
 import { BaseSyntheticEvent, useState } from "react"
 import { updateArtworkSet, storeImage } from "./db/firebase"
-import { ILayerData, IUploadSettings } from "./types"
+import { ILayerData, IUploadedImage, IVarietyLeaf } from "./types"
 
 //get length
 const BASE_PATH = `/gallery/`
@@ -37,18 +37,17 @@ function App() {
   const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
   const [layerImages, setLayerImages] = useState([])
-  const [varietyMetadata, setVarietyMetadata] = useState([])
-  const [metadata, setMetaData] = useState({} as ILayerData)
+  const [varietyMetadata, setVarietyMetadata] = useState([] as IVarietyLeaf[][])
+  const [metadata, setMetaData] = useState({} as Partial<ILayerData>)
   const [fuzzNum, setFuzzNum] = useState(0)
-  const [colorsNum, setColorsNum] = useState(0)
 
   const onClickUpload = async () => {
     setUploadStatus("STORING IMAGE...")
     if (userImage) {
       const imageUrl = await storeImage(userImage)
       setUploadStatus("UPLOADING DOCUMENT....")
-      const _id = await updateArtworkSet({ sourceImageUri: imageUrl })
-      const metadata = {
+      const _id = await updateArtworkSet({ imageUrl })
+      const metadata: Partial<IUploadedImage> = {
         _id,
         imageUrl,
         fuzz: `${fuzzNum}%`,
@@ -78,17 +77,17 @@ function App() {
   }
 
   const getLayers = async ({
-    _id,
+    _id, // original artwork/source id
     imageUrl,
     fuzz,
     numDominantColorsToExtract,
-  }: IUploadSettings) => {
+  }: Partial<IUploadedImage>) => {
     // post image to url, get response back,
     // response is array of images and metadata
     // Example POST method implementation:
     // Default options are marked with *
     setLayerImages([])
-    const data = {
+    const data: Partial<IUploadedImage> = {
       imageUrl,
       fuzz,
       numDominantColorsToExtract,
@@ -135,10 +134,16 @@ function App() {
     //     colorVariety: 0,
     //   }),
     // )
-    const layerData: ILayerData = response.urls.reduce(
+    /**
+     * object with layer information.
+     * can change shape to array here
+     */
+    const layerData: Partial<ILayerData> = response.urls.reduce(
       (obj: any, url: string, i: number) => {
         obj[response.dominantColors[i].hexCode] = {
           _id: nanoid(),
+          _ogid: response.id,
+          _rid: _id,
           depthNumber: i,
           imageUri: url,
           rarity: "normal",
@@ -163,7 +168,8 @@ function App() {
     console.log("::-SENDING TO SERVER-::")
     console.log(metadata)
     //convert images but ideally recieve downloadURLs when finished...
-    const response = (await fetch("/api/gen", {
+    console.log("projectId", projectId && projectId)
+    const response = (await fetch(`/api/gen?pid=${projectId}`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -186,21 +192,18 @@ function App() {
       .catch((err) => {
         setErrorMsg("Error Creating Layers: " + err.message)
         console.error("error", err)
-      })) as ILayerData["varieties"]["varieties"][]
+      })) as IVarietyLeaf[][]
 
     console.info("::-RANDOMIZATION RESPONSE-::")
     console.log(response)
-    response?.length > 0 && setVarietyMetadata(response as any)
+    response?.length > 0 && setVarietyMetadata(response)
     //response is an array or array of varieties, each with an array of varieties per layer
-    response?.forEach(
-      (layer: ILayerData["varieties"]["varieties"], i: number) => {
-        const colorIndex = layer[i].origColorCode
-        // need to fix type of metadata here to accept the right type as index
-        ;(metadata as any)[colorIndex].varieties = {
-          [layer[i].newColorCode]: layer,
-        }
-      },
-    )
+    response?.forEach((layer) => {
+      const colorIndex = layer[0].origColorCode
+      metadata[colorIndex]!.varieties = {
+        [layer[0].newColorCode]: layer,
+      }
+    })
     //can i upload new stuff to layers and have it merge, or willi t overwrite layers:
     updateArtworkSet({ _id: projectId, layers: metadata }) // use swr here
 
@@ -274,7 +277,7 @@ function App() {
                   onChange={(e) => {
                     const newMeta = metadata
                     Object.entries(newMeta).forEach((iteration) => {
-                      newMeta[iteration[0]].colorVariety = Number(
+                      newMeta[iteration[0]]!.colorVariety = Number(
                         e.currentTarget.value,
                       )
                     })

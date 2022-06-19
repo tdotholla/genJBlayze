@@ -10,6 +10,7 @@ import {
 // import { getAuth, useDeviceLanguage } from "firebase/auth"
 // import { getAnalytics } from "firebase/analytics"
 import { nanoid } from "nanoid"
+import { IUploadedImage } from "../types"
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_AvlJ-tlRx7dGtZ_qUmzCEw2ekQ11XoI",
@@ -22,44 +23,24 @@ const firebaseConfig = {
 }
 
 const appRef = initializeApp(firebaseConfig)
-// export const analytics = getAnalytics(appRef)
+// export const analytics = getAnalytics(appRef) //needs "window"
 const fsdb = initializeFirestore(appRef, {})
 export const fbStorage = getStorage(appRef)
 // useDeviceLanguage(getAuth())
 const uploadsRef = collection(fsdb, "UPLOADS")
 
-// const storageRef = ref(fbStorage, "/uploads")
-
-export const storeImage = async (image: File) => {
+export const storeImage = async (
+  image: File,
+  path = `/uploads/${image.name}`,
+) => {
   if (image) {
-    const storageRef = ref(fbStorage, `/uploads/${image.name}`)
+    const storageRef = ref(fbStorage, path)
     await uploadBytes(storageRef, image, {})
     const imageURI = await getDownloadURL(storageRef)
-    // console.info("image", image)
     return imageURI
   }
 }
 
-// == ARTWORKS ================================== //
-
-interface ILayer {
-  [name: string]: {
-    depthNumber?: number
-    imageUri: string
-    rarity?: string
-  }
-}
-interface IUploadedImage {
-  uid?: string
-  _id: string
-  sourceImageUri: string | undefined
-  dateTime?: string
-  fuzz?: number
-  numDominantColorsToExtract?: number
-  isWhiteTransparent?: boolean
-  layers?: ILayer
-  editions?: number
-}
 export const updateArtworkSet = async function (data: Partial<IUploadedImage>) {
   const _id = data._id ?? nanoid()
   const dateTime = data.dateTime ?? new Date().toISOString()
