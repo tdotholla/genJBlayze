@@ -22,7 +22,7 @@ const konvert = promisify(convert)
  * @param res response object
  * @returns JSON response
  */
-const randomizeLayersHandler = async (
+const flattenLayersHandler = async (
   req: NextApiRequest,
   res: NextApiResponse,
 ) => {
@@ -99,26 +99,29 @@ const randomizeLayersHandler = async (
                   // uploadBytes(storageRef, filePath)
                 }
               }
-              try {
-                return await konvert([
-                  imageUri,
-                  "-fuzz",
-                  "90%",
-                  "-fill",
-                  randomColor,
-                  "-opaque",
-                  "#" + colorCode,
-                  // filePath, // creates a file
-                  "-", // use stdout
-                ]).then(async (binString) => ({
-                  _id: nanoid(),
-                  origColorCode: colorCode,
-                  newColorCode: snakedColor,
-                  imageUri: await uploadImage(binString as BinaryType),
-                }))
-              } catch (error) {
-                console.error("APP ERROR: Konvert failure" + error)
-              }
+              /**
+               * flatten multiple images together
+               *  convert rose: -repage +10+10 \
+          \( +clone -background black -shadow 60x3+5+5 \) \
+          \( granite: -crop 100x80+0+0 +repage \) \
+          -background none  -compose DstOver -layers merge layer_dstover.gif
+               */
+              return await konvert([
+                imageUri,
+                "-fuzz",
+                "90%",
+                "-fill",
+                randomColor,
+                "-opaque",
+                "#" + colorCode,
+                // filePath, // creates a file
+                "-", // use stdout
+              ]).then(async (binString) => ({
+                _id: nanoid(),
+                origColorCode: colorCode,
+                newColorCode: snakedColor,
+                imageUri: await uploadImage(binString as BinaryType),
+              }))
             }),
           )
 
@@ -175,4 +178,4 @@ const randomizeLayersHandler = async (
 // await spawn("convert", [tempFilePath, "-white-threshold", "90%", "-transparent", "white", "-fill", colorSubstitution, "-opaque", "black", tempFilePath + ".png"]);
 // await spawn("convert", [tempFilePath, "-white-threshold", "90%", "-black-threshold", "90%", "-transparent", "white", "-fill", vinylColor?.designColor?.hexColor, "-opaque", "black", tempFilePath + ".png"]);
 
-export default randomizeLayersHandler
+export default flattenLayersHandler
