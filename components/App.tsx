@@ -30,21 +30,21 @@ for (let index = 0; index < IMAGES.length; index++) {
 }
 
 function App() {
-  const [userImage, setUserImage] = useState(null)
+  const [userArtwork, setUserArtwork] = useState(null)
   // const [imageURI, setImageURI] = useState("")
   const [previewURI, setPreviewURI] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
   const [projectId, setProjectId] = useState("")
   const [uploadStatus, setUploadStatus] = useState("")
-  const [layerImages, setLayerImages] = useState([])
+  const [artworkLayers, setArtworkLayers] = useState([])
   const [varietyMetadata, setVarietyMetadata] = useState([] as IVarietyLeaf[][])
   const [metadata, setMetaData] = useState({} as Partial<ILayerData>)
   const [fuzzNum, setFuzzNum] = useState(0)
 
   const onClickUpload = async () => {
     setUploadStatus("STORING IMAGE...")
-    if (userImage) {
-      const imageUrl = await storeImage(userImage)
+    if (userArtwork) {
+      const imageUrl = await storeImage(userArtwork)
       setUploadStatus("UPLOADING DOCUMENT....")
       const _id = await updateArtworkSet({ imageUrl })
       const metadata: Partial<IUploadedImage> = {
@@ -64,9 +64,9 @@ function App() {
 
   const onFileInputChange = (e: BaseSyntheticEvent) => {
     setPreviewURI("")
-    setUserImage(null)
+    setUserArtwork(null)
     const file = e.target.files[0]
-    setUserImage(file)
+    setUserArtwork(file)
     const reader = new FileReader()
     reader.onload = (ev) =>
       ev.target?.result && setPreviewURI(ev.target.result as string)
@@ -86,7 +86,7 @@ function App() {
     // response is array of images and metadata
     // Example POST method implementation:
     // Default options are marked with *
-    setLayerImages([])
+    setArtworkLayers([])
     const data: Partial<IUploadedImage> = {
       imageUrl,
       fuzz,
@@ -156,7 +156,7 @@ function App() {
       },
       {},
     )
-    setLayerImages(response.urls)
+    setArtworkLayers(response.urls)
     setMetaData(layerData)
     projectId && (await updateArtworkSet({ _id: projectId, layers: layerData })) // use swr here
   }
@@ -169,7 +169,7 @@ function App() {
     console.log(metadata)
     //convert images but ideally recieve downloadURLs when finished...
     console.log("projectId", projectId && projectId)
-    const response = (await fetch(`/api/gen?pid=${projectId}`, {
+    const response = (await fetch(`/api/gen`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -254,21 +254,21 @@ function App() {
               </Box>
             )}
             {projectId && <Text>Project ID: {projectId}</Text>}
-            {layerImages?.length > 0 && (
+            {artworkLayers?.length > 0 && (
               <Grid
                 templateColumns="repeat(3, 1fr)"
                 gap={5}
                 overflowX="scroll"
                 width="100vw"
               >
-                {layerImages?.map((url) => (
+                {artworkLayers?.map((url) => (
                   <GridItem key={url}>
                     <Image src={url} alt="Layer Image" />
                   </GridItem>
                 ))}
               </Grid>
             )}
-            {layerImages.length > 0 && (
+            {artworkLayers.length > 0 && (
               <Box>
                 <FormLabel># of Colors</FormLabel>
                 <Input

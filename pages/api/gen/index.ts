@@ -99,23 +99,26 @@ const randomizeLayersHandler = async (
                   // uploadBytes(storageRef, filePath)
                 }
               }
-
-              return await konvert([
-                imageUri,
-                "-fuzz",
-                "90%",
-                "-fill",
-                randomColor,
-                "-opaque",
-                "#" + colorCode,
-                // filePath, // creates a file
-                "-", // use stdout
-              ]).then(async (binString) => ({
-                _id: nanoid(),
-                origColorCode: colorCode,
-                newColorCode: snakedColor,
-                imageUri: await uploadImage(binString as BinaryType),
-              }))
+              try {
+                return await konvert([
+                  imageUri,
+                  "-fuzz",
+                  "90%",
+                  "-fill",
+                  randomColor,
+                  "-opaque",
+                  "#" + colorCode,
+                  // filePath, // creates a file
+                  "-", // use stdout
+                ]).then(async (binString) => ({
+                  _id: nanoid(),
+                  origColorCode: colorCode,
+                  newColorCode: snakedColor,
+                  imageUri: await uploadImage(binString as BinaryType),
+                }))
+              } catch (error) {
+                console.error("APP ERROR: Konvert failure" + error)
+              }
             }),
           )
 
