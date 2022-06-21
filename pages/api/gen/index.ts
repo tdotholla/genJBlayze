@@ -17,9 +17,22 @@ import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import { nanoid } from "nanoid"
 import { promisify } from "util"
+import { cwd } from "process"
+;(function () {
+  var childProcess = require("child_process")
+  var oldSpawn = childProcess.spawn
+  function mySpawn() {
+    console.log("SPAWN CALLED")
+    console.log(arguments)
+    var result = oldSpawn.apply(this, arguments)
+    return result
+  }
+  childProcess.spawn = mySpawn
+})()
 
 const maxAge = 1 * 24 * 60 * 60
-console.log(convert.path)
+console.log("im path", convert.path)
+convert.path = `${cwd()}/tmp`
 const konvert = promisify(convert)
 /**
  *
