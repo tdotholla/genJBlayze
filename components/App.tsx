@@ -190,7 +190,7 @@ function App() {
       })
       .then((data) => data)
       .catch((err) => {
-        setErrorMsg("Error Creating Layers: " + err.message)
+        setErrorMsg("Error Creating Layers: " + err)
         console.error("error", err)
       })) as IVarietyLeaf[][]
 

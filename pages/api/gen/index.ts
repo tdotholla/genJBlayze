@@ -118,6 +118,7 @@ const randomizeLayersHandler = async (
                 }))
               } catch (error) {
                 console.error("APP ERROR: Konvert failure" + error)
+                return error
               }
             }),
           )
