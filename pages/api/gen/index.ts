@@ -7,7 +7,12 @@
 import { getDownloadURL, ref, uploadString } from "firebase/storage"
 import { fbStorage } from "../../../components/db/firebase"
 import { ILayerData } from "../../../components/types"
-import { getFileName } from "../../../components/utils"
+import {
+  allowCors,
+  getFileName,
+  getRandomRGBA,
+  snakeCaseRGB,
+} from "../../../components/utils"
 import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import { nanoid } from "nanoid"
@@ -37,19 +42,7 @@ const randomizeLayersHandler = async (
     body,
     method,
   } = req
-  // const getRandomHexColor = () =>
-  //   Math.floor(Math.random() * 16777215)
-  //     .toString(16)
-  //     .toUpperCase()
-  const getRandomRGBA = () => {
-    const getNum = () => Math.floor(Math.random() * 256)
-    const getOpacity = () =>
-      (Math.floor(Math.random() * (100 - 50 + 1) + 50) / 100).toPrecision(2) //btwn .5-1
-    return `rgba(${getNum()},${getNum()},${getNum()},${getOpacity()})`
-  }
-  // const fileRoot = path.join(process.cwd(), "tmp/")
-  const snakeCaseRGB = (color: string): string =>
-    color.slice(0, -1).replace(/[(,.]/g, "_")
+
   /**
    *   '000000': {
    _id: 'nMLLdR6mjLAnDO-sxQtu-',
@@ -176,4 +169,4 @@ const randomizeLayersHandler = async (
 // await spawn("convert", [tempFilePath, "-white-threshold", "90%", "-transparent", "white", "-fill", colorSubstitution, "-opaque", "black", tempFilePath + ".png"]);
 // await spawn("convert", [tempFilePath, "-white-threshold", "90%", "-black-threshold", "90%", "-transparent", "white", "-fill", vinylColor?.designColor?.hexColor, "-opaque", "black", tempFilePath + ".png"]);
 
-export default randomizeLayersHandler
+export default allowCors(randomizeLayersHandler)
