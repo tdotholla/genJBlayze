@@ -19,6 +19,7 @@ import { nanoid } from "nanoid"
 import { promisify } from "util"
 
 const maxAge = 1 * 24 * 60 * 60
+console.log(convert.path)
 const konvert = promisify(convert)
 /**
  *
