@@ -23,8 +23,8 @@ import { join, resolve } from "path"
 import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
-const IM_TMP_PATH = isDev() ? "convert" : "../tmp"
-console.log(resolve("../tmp"))
+const IM_TMP_PATH = isDev() ? "convert" : resolve("../../tmp")
+console.log(resolve("../../tmp"))
 const konvert = promisify(convert)
 /**
  *
@@ -77,7 +77,6 @@ const randomizeLayersHandler = async (
               const fileName = `${getFileName(
                 imageUri,
               )}_${colorCode}-${snakedColor}.png`
-              console.log(fileName)
               const uploadImage = async (binaryString: BinaryType) => {
                 const storageRef = ref(
                   fbStorage,
