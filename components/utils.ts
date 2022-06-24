@@ -16,7 +16,7 @@ export const snakeCaseRGB = (color: string): string =>
   color.slice(0, -1).replace(/[(,.]/g, "_")
 
 export const getFileName = (uri: string | undefined) =>
-  !!!uri ? "" : uri.split("/")[uri.split("/").length - 1].split(".")[0]
+  !uri ? "" : uri.split("/")[uri.split("/").length - 1].split(".")[0]
 
 export function setRef(imageUri: string) {
   return ref(fbStorage, `/uploads/${getFileName(imageUri)}.png`)

@@ -18,11 +18,11 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { nanoid } from "nanoid"
 import { promisify } from "util"
 import { cwd } from "process"
-import { join, resolve } from "path"
+import { resolve } from "path"
 
 const maxAge = 1 * 24 * 60 * 60
 const IM_TMP_PATH = resolve(cwd(), "tmp")
-convert.path = IM_TMP_PATH
+
 const konvert = promisify(convert)
 /**
  *
@@ -59,10 +59,10 @@ const randomizeLayersHandler = async (
   // let newobj = {}
   switch (method) {
     case "POST":
-      // take each uri and convert them x times
       if (!body) return res.status(400).send("You must write something")
-      // need a promise.all array here
+      convert.path = IM_TMP_PATH
       console.log("inside im path", resolve(convert.path))
+      // take each uri and convert them x times
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item, i) {
           const colorCode = item[0]
