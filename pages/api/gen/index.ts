@@ -19,12 +19,12 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { nanoid } from "nanoid"
 import { promisify } from "util"
 import { cwd } from "process"
-import { join } from "path"
+import { join, resolve } from "path"
 import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
-const IM_TMP_PATH = isDev() ? "" : "tmp"
-
+const IM_TMP_PATH = isDev() ? "convert" : "../tmp"
+console.log(resolve("../tmp"))
 const konvert = promisify(convert)
 /**
  *
@@ -66,7 +66,7 @@ const randomizeLayersHandler = async (
       console.log("inside im path", convert.path)
       // take each uri and convert them x times
       randomizedUris = Promise.all(
-        Object.entries(body as ILayerData).map(async function (item, i) {
+        Object.entries(body as ILayerData).map(async function (item) {
           const colorCode = item[0]
           const { imageUri, colorVariety, _rid } = item[1]
 
@@ -76,7 +76,8 @@ const randomizeLayersHandler = async (
               const snakedColor = snakeCaseRGB(randomColor)
               const fileName = `${getFileName(
                 imageUri,
-              )}_${colorCode}-${snakedColor}_${i}_of_${colorVariety}.png`
+              )}_${colorCode}-${snakedColor}.png`
+              console.log(fileName)
               const uploadImage = async (binaryString: BinaryType) => {
                 const storageRef = ref(
                   fbStorage,
@@ -106,8 +107,6 @@ const randomizeLayersHandler = async (
                   randomColor,
                   "-opaque",
                   "#" + colorCode,
-                  "-define",
-                  "registry: temporary-path=/data/tmp",
                   // filePath, // creates a file
                   "-", // use stdout
                 ]).then(async (binString) => ({
