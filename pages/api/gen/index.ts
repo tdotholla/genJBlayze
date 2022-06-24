@@ -23,8 +23,8 @@ import { join, resolve } from "path"
 import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
-const IM_TMP_PATH = isDev() ? "convert" : resolve("../../tmp")
-console.log(resolve("../../tmp"))
+const IM_TMP_PATH = isDev() ? "convert" : join(cwd(), "gallery")
+console.log(join(cwd(), "gallery"))
 const konvert = promisify(convert)
 /**
  *
