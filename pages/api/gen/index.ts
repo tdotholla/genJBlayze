@@ -18,21 +18,11 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { nanoid } from "nanoid"
 import { promisify } from "util"
 import { cwd } from "process"
-;(function () {
-  var childProcess = require("child_process")
-  var oldSpawn = childProcess.spawn
-  function mySpawn() {
-    console.log("SPAWN CALLED")
-    console.log(arguments)
-    var result = oldSpawn.apply(this, arguments)
-    return result
-  }
-  childProcess.spawn = mySpawn
-})()
+import { join, resolve } from "path"
 
 const maxAge = 1 * 24 * 60 * 60
-console.log("im path", convert.path)
-convert.path = `${cwd()}/tmp`
+const IM_TMP_PATH = resolve(cwd(), "tmp")
+convert.path = IM_TMP_PATH
 const konvert = promisify(convert)
 /**
  *
@@ -72,6 +62,7 @@ const randomizeLayersHandler = async (
       // take each uri and convert them x times
       if (!body) return res.status(400).send("You must write something")
       // need a promise.all array here
+      console.log("inside im path", resolve(convert.path))
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item, i) {
           const colorCode = item[0]
@@ -81,15 +72,13 @@ const randomizeLayersHandler = async (
             Array.from(Array(colorVariety)).map(async () => {
               const randomColor = getRandomRGBA()
               const snakedColor = snakeCaseRGB(randomColor)
-              const filePath =
-                imageUri &&
-                `${getFileName(
-                  imageUri,
-                )}_${colorCode}-${snakedColor}_${i}_of_${colorVariety}.png`
+              const fileName = `${getFileName(
+                imageUri,
+              )}_${colorCode}-${snakedColor}_${i}_of_${colorVariety}.png`
               const uploadImage = async (binaryString: BinaryType) => {
                 const storageRef = ref(
                   fbStorage,
-                  `/uploads/${_rid}/${filePath}`,
+                  `/uploads/${_rid}/${fileName}`,
                 )
                 if (binaryString) {
                   const bufString = Buffer.from(
@@ -101,7 +90,7 @@ const randomizeLayersHandler = async (
                   })
                   return await getDownloadURL(storageRef)
                 } else {
-                  console.log(filePath)
+                  console.log(fileName)
                   // read file and upload?
                   // uploadBytes(storageRef, filePath)
                 }
