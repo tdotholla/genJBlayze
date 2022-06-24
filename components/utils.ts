@@ -42,3 +42,5 @@ export const allowCors =
 
     return await fn(req, res)
   }
+
+export const isDev = () => process.env.NODE_ENV === "development"

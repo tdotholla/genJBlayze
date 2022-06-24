@@ -11,6 +11,7 @@ import {
   allowCors,
   getFileName,
   getRandomRGBA,
+  isDev,
   snakeCaseRGB,
 } from "../../../components/utils"
 import { convert } from "imagemagick"
@@ -22,7 +23,9 @@ import { join } from "path"
 import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
-const IM_TMP_PATH = join(cwd(), "tmp")
+console.log(process.env.NODE_ENV)
+const IM_TMP_PATH = isDev() ? "" : "tmp"
+
 const emptyFileString = readFileSync(IM_TMP_PATH + "/empty.json", "utf8")
 console.log(emptyFileString)
 const konvert = promisify(convert)
