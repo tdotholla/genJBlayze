@@ -60,7 +60,7 @@ const randomizeLayersHandler = async (
   switch (method) {
     case "POST":
       if (!body) return res.status(400).send("You must write something")
-      convert.path = IM_TMP_PATH
+      // convert.path = IM_TMP_PATH
       console.log("inside im path", resolve(convert.path))
       // take each uri and convert them x times
       randomizedUris = Promise.all(
@@ -104,6 +104,8 @@ const randomizeLayersHandler = async (
                   randomColor,
                   "-opaque",
                   "#" + colorCode,
+                  "-define",
+                  "registry: temporary-path=/data/tmp",
                   // filePath, // creates a file
                   "-", // use stdout
                 ]).then(async (binString) => ({
