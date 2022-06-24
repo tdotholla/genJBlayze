@@ -23,11 +23,8 @@ import { join } from "path"
 import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
-console.log(process.env.NODE_ENV)
 const IM_TMP_PATH = isDev() ? "" : "tmp"
 
-const emptyFileString = readFileSync(IM_TMP_PATH + "/empty.json", "utf8")
-console.log(emptyFileString)
 const konvert = promisify(convert)
 /**
  *
