@@ -18,11 +18,13 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { nanoid } from "nanoid"
 import { promisify } from "util"
 import { cwd } from "process"
-import { resolve } from "path"
+import { join } from "path"
+import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
-const IM_TMP_PATH = resolve(cwd(), "tmp")
-
+const IM_TMP_PATH = join(cwd(), "tmp")
+const emptyFileString = readFileSync(IM_TMP_PATH + "/empty.json", "utf8")
+console.log(emptyFileString)
 const konvert = promisify(convert)
 /**
  *
@@ -60,8 +62,8 @@ const randomizeLayersHandler = async (
   switch (method) {
     case "POST":
       if (!body) return res.status(400).send("You must write something")
-      // convert.path = IM_TMP_PATH
-      console.log("inside im path", resolve(convert.path))
+      convert.path = IM_TMP_PATH
+      console.log("inside im path", convert.path)
       // take each uri and convert them x times
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item, i) {
