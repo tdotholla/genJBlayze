@@ -20,11 +20,11 @@ import { nanoid } from "nanoid"
 import { promisify } from "util"
 import { cwd } from "process"
 import { join, resolve } from "path"
-import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
 const IM_TMP_PATH = isDev() ? "convert" : join(cwd(), "gallery")
 console.log(join(cwd(), "gallery"))
+
 const konvert = promisify(convert)
 /**
  *
@@ -57,8 +57,32 @@ const randomizeLayersHandler = async (
    rarity: 'normal'
   }
   */
-  let randomizedUris = []
+  let randomizedUris = Promise<any[][]>
   // let newobj = {}
+
+  const uploadImage = async ({
+    binaryString,
+    fileName,
+    id,
+  }: {
+    binaryString: BinaryType
+    fileName: string
+    id: string
+  }) => {
+    const storageRef = ref(fbStorage, `/uploads/${id}/${fileName}`)
+    if (binaryString) {
+      const bufString = Buffer.from(binaryString, "binary").toString("base64")
+      await uploadString(storageRef, bufString, "base64", {
+        contentType: "image/png",
+      })
+      return await getDownloadURL(storageRef)
+    } else {
+      console.log(fileName)
+      // read file and upload?
+      // uploadBytes(storageRef, filePath)
+    }
+  }
+
   switch (method) {
     case "POST":
       if (!body) return res.status(400).send("You must write something")
@@ -77,26 +101,7 @@ const randomizeLayersHandler = async (
               const fileName = `${getFileName(
                 imageUri,
               )}_${colorCode}-${snakedColor}.png`
-              const uploadImage = async (binaryString: BinaryType) => {
-                const storageRef = ref(
-                  fbStorage,
-                  `/uploads/${_rid}/${fileName}`,
-                )
-                if (binaryString) {
-                  const bufString = Buffer.from(
-                    binaryString,
-                    "binary",
-                  ).toString("base64")
-                  await uploadString(storageRef, bufString, "base64", {
-                    contentType: "image/png",
-                  })
-                  return await getDownloadURL(storageRef)
-                } else {
-                  console.log(fileName)
-                  // read file and upload?
-                  // uploadBytes(storageRef, filePath)
-                }
-              }
+              console.log(fileName)
               try {
                 return await konvert([
                   imageUri,
@@ -108,12 +113,20 @@ const randomizeLayersHandler = async (
                   "#" + colorCode,
                   // filePath, // creates a file
                   "-", // use stdout
-                ]).then(async (binString) => ({
-                  _id: nanoid(),
-                  origColorCode: colorCode,
-                  newColorCode: snakedColor,
-                  imageUri: await uploadImage(binString as BinaryType),
-                }))
+                ]).then(async (binString) => {
+                  const imageUri = await uploadImage({
+                    binaryString: binString as BinaryType,
+                    fileName,
+                    id: _rid,
+                  })
+                  console.log("imageUri: " + imageUri)
+                  return {
+                    _id: nanoid(),
+                    origColorCode: colorCode,
+                    newColorCode: snakedColor,
+                    imageUri,
+                  }
+                })
               } catch (error) {
                 console.error("APP ERROR: Konvert failure" + error)
                 return error
@@ -174,4 +187,4 @@ const randomizeLayersHandler = async (
 // await spawn("convert", [tempFilePath, "-white-threshold", "90%", "-transparent", "white", "-fill", colorSubstitution, "-opaque", "black", tempFilePath + ".png"]);
 // await spawn("convert", [tempFilePath, "-white-threshold", "90%", "-black-threshold", "90%", "-transparent", "white", "-fill", vinylColor?.designColor?.hexColor, "-opaque", "black", tempFilePath + ".png"]);
 
-export default allowCors(randomizeLayersHandler)
+export default await allowCors(randomizeLayersHandler)

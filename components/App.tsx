@@ -169,7 +169,7 @@ function App() {
     console.log(metadata)
     //convert images but ideally recieve downloadURLs when finished...
     console.log("projectId", projectId && projectId)
-    const response = (await fetch(`/api/gen`, {
+    const response = (await fetch(`/api/gen/SomeRandomfilename`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
