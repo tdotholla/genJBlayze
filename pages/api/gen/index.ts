@@ -4,7 +4,12 @@
 // run generate commands with params
 // upload images to store and return urls to all images
 
-import { getDownloadURL, ref, uploadString } from "firebase/storage"
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage"
 import { fbStorage } from "../../../components/db/firebase"
 import { ILayerData } from "../../../components/types"
 import {
@@ -23,9 +28,33 @@ import { join, resolve } from "path"
 import { readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
-const IM_TMP_PATH = isDev() ? "convert" : join(cwd(), "gallery")
-console.log(join(cwd(), "gallery"))
 const konvert = promisify(convert)
+
+const uploadImage = async ({
+  binaryString,
+  filePath,
+  id,
+}: {
+  binaryString?: BinaryType
+  filePath: string
+  id: string
+}) => {
+  const fileName = getFileName(filePath)
+  const storageRef = ref(fbStorage, `/uploads/${id}/${fileName}`)
+  console.log(fileName)
+  if (binaryString) {
+    const bufString = Buffer.from(binaryString, "binary").toString("base64")
+    await uploadString(storageRef, bufString, "base64", {
+      contentType: "image/png",
+    })
+    return await getDownloadURL(storageRef)
+  } else {
+    console.log(fileName)
+    // read file and upload?
+    await uploadBytes(storageRef, filePath)
+  }
+}
+
 /**
  *
  * Takes an array of image urls and applies imagemagick transformations to each, before uploading them to Storage
@@ -47,6 +76,7 @@ const randomizeLayersHandler = async (
     //can send query params to sort & limit results
     body,
     method,
+    query,
   } = req
 
   /**
@@ -58,7 +88,13 @@ const randomizeLayersHandler = async (
   }
   */
   let randomizedUris = []
+  const IS_DEV = isDev()
+  const IM_TMP_PATH = join(cwd(), IS_DEV ? "public/gallery" : "files")
+  let outputPath = "-"
+  const { format } = query
+
   // let newobj = {}
+
   switch (method) {
     case "POST":
       if (!body) return res.status(400).send("You must write something")
@@ -69,6 +105,9 @@ const randomizeLayersHandler = async (
         Object.entries(body as ILayerData).map(async function (item) {
           const colorCode = item[0]
           const { imageUri, colorVariety, _rid } = item[1]
+          if (format == "file") {
+            outputPath = IM_TMP_PATH
+          }
 
           return await Promise.all(
             Array.from(Array(colorVariety)).map(async () => {
@@ -77,26 +116,8 @@ const randomizeLayersHandler = async (
               const fileName = `${getFileName(
                 imageUri,
               )}_${colorCode}-${snakedColor}.png`
-              const uploadImage = async (binaryString: BinaryType) => {
-                const storageRef = ref(
-                  fbStorage,
-                  `/uploads/${_rid}/${fileName}`,
-                )
-                if (binaryString) {
-                  const bufString = Buffer.from(
-                    binaryString,
-                    "binary",
-                  ).toString("base64")
-                  await uploadString(storageRef, bufString, "base64", {
-                    contentType: "image/png",
-                  })
-                  return await getDownloadURL(storageRef)
-                } else {
-                  console.log(fileName)
-                  // read file and upload?
-                  // uploadBytes(storageRef, filePath)
-                }
-              }
+              outputPath += `/${fileName}`
+              console.log("outputPath: " + outputPath)
               try {
                 return await konvert([
                   imageUri,
@@ -106,14 +127,20 @@ const randomizeLayersHandler = async (
                   randomColor,
                   "-opaque",
                   "#" + colorCode,
-                  // filePath, // creates a file
-                  "-", // use stdout
-                ]).then(async (binString) => ({
-                  _id: nanoid(),
-                  origColorCode: colorCode,
-                  newColorCode: snakedColor,
-                  imageUri: await uploadImage(binString as BinaryType),
-                }))
+                  outputPath,
+                ]).then(async (binString) => {
+                  const imageUri = await uploadImage({
+                    binaryString: binString as BinaryType,
+                    id: _rid,
+                    filePath: outputPath,
+                  })
+                  return {
+                    _id: nanoid(),
+                    origColorCode: colorCode,
+                    newColorCode: snakedColor,
+                    imageUri,
+                  }
+                })
               } catch (error) {
                 console.error("APP ERROR: Konvert failure" + error)
                 return error
