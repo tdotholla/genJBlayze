@@ -89,7 +89,7 @@ const randomizeLayersHandler = async (
   */
   let randomizedUris = []
   const IS_DEV = isDev()
-  const IM_TMP_PATH = join(cwd(), IS_DEV ? "public/gallery" : "files")
+  const IM_TMP_PATH = IS_DEV ? "public/gallery" : join(cwd(), "files")
   let outputPath = "-"
   const { format } = query
 
@@ -101,6 +101,7 @@ const randomizeLayersHandler = async (
       convert.path = IM_TMP_PATH
       console.log("inside im path", convert.path)
       // take each uri and convert them x times
+      const imageURIs: any[] = []
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item) {
           const colorCode = item[0]
@@ -108,7 +109,6 @@ const randomizeLayersHandler = async (
           if (format == "file") {
             outputPath = IM_TMP_PATH
           }
-
           return await Promise.all(
             Array.from(Array(colorVariety)).map(async () => {
               const randomColor = getRandomRGBA()
@@ -119,30 +119,35 @@ const randomizeLayersHandler = async (
               outputPath += `/${fileName}`
               console.log("outputPath: " + outputPath)
               try {
-                return await konvert([
-                  imageUri,
-                  "-fuzz",
-                  "90%",
-                  "-fill",
-                  randomColor,
-                  "-opaque",
-                  "#" + colorCode,
-                  outputPath,
-                ]).then(async (binString) => {
-                  const imageUri = await uploadImage({
-                    binaryString: binString as BinaryType,
-                    id: _rid,
-                    filePath: outputPath,
-                  })
-                  return {
-                    _id: nanoid(),
-                    origColorCode: colorCode,
-                    newColorCode: snakedColor,
+                convert(
+                  [
                     imageUri,
-                  }
-                })
+                    "-fuzz",
+                    "90%",
+                    "-fill",
+                    randomColor,
+                    "-opaque",
+                    "#" + colorCode,
+                    outputPath,
+                  ],
+                  async (err, binString) => {
+                    if (err) console.log("ERR: " + err.message)
+                    const imageUri = await uploadImage({
+                      binaryString: binString as BinaryType,
+                      id: _rid,
+                      filePath: outputPath,
+                    })
+                    const imageData = {
+                      _id: nanoid(),
+                      origColorCode: colorCode,
+                      newColorCode: snakedColor,
+                      imageUri,
+                    }
+                    imageURIs.push(imageData)
+                  },
+                )
               } catch (error) {
-                console.error("APP ERROR: Konvert failure" + error)
+                console.error("APP ERROR: Konvert failure: " + error)
                 return error
               }
             }),

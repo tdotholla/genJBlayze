@@ -182,10 +182,10 @@ function App() {
       body: JSON.stringify(metadata), // body data type must match "Content-Type" header
     })
       .then((resp) => {
+        setUploadStatus("RANDOMIZING LAYERS....")
         if (!resp.ok) {
           return resp.text().then((result) => Promise.reject(new Error(result)))
         }
-        setUploadStatus("RANDOMIZING LAYERS....")
         return resp.json()
       })
       .then((data) => data)
@@ -196,19 +196,23 @@ function App() {
 
     console.info("::-RANDOMIZATION RESPONSE-::")
     console.log(response)
-    response?.length > 0 && setVarietyMetadata(response)
-    //response is an array or array of varieties, each with an array of varieties per layer
-    response?.forEach((layer) => {
-      const colorIndex = layer[0].origColorCode
-      metadata[colorIndex].varieties = {
-        [layer[0].newColorCode]: layer,
-      }
-    })
-    //can i upload new stuff to layers and have it merge, or willi t overwrite layers:
-    updateArtworkSet({ _id: projectId, layers: metadata }) // use swr here
+    if (response.length > 0 && !response[0]) {
+      //response is an array or array of varieties, each with an array of varieties per layer
+      response?.forEach((layer) => {
+        const colorIndex = layer[0]?.origColorCode
+        metadata[colorIndex].varieties = {
+          [layer[0]?.newColorCode]: layer,
+        }
+      })
+      //can i upload new stuff to layers and have it merge, or willi t overwrite layers:
+      updateArtworkSet({ _id: projectId, layers: metadata }) // use swr here
 
-    //check status and get URLs for randomized images, then upload to db, display results in view?
-    // then generate random images from layerImages
+      //check status and get URLs for randomized images, then upload to db, display results in view?
+      // then generate random images from layerImages
+    } else {
+      console.warn("ISSUE WITH RESPONSE")
+    }
+    response?.length > 0 && setVarietyMetadata(response)
   }
   return (
     <Box className="App">
@@ -301,13 +305,17 @@ function App() {
                 width="100vw"
               >
                 {varietyMetadata?.map((layer: IVarietyLeaf[]) =>
-                  layer.map((variety) => (
-                    <GridItem
-                      key={`${variety.imageUri}_${variety.origColorCode}_${variety.newColorCode}`}
-                    >
-                      <Image src={variety.imageUri} alt="Layer Image" />
-                    </GridItem>
-                  )),
+                  layer.map((variety) =>
+                    !variety ? (
+                      <Text>An Error has occurred...</Text>
+                    ) : (
+                      <GridItem
+                        key={`${variety.imageUri}_${variety.origColorCode}_${variety.newColorCode}`}
+                      >
+                        <Image src={variety.imageUri} alt="Layer Image" />
+                      </GridItem>
+                    ),
+                  ),
                 )}
               </Grid>
             )}
