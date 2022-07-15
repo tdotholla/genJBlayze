@@ -97,7 +97,7 @@ const randomizeLayersHandler = async (
   let randomizedUris = []
 
   const IS_DEV = isDev()
-  const IM_TMP_PATH = IS_DEV ? "convert" : join(cwd(), "tmp")
+  const IM_TMP_PATH = IS_DEV ? "convert" : "convert"
   let outputPath = "-"
   const { format } = query
 
