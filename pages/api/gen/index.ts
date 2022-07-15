@@ -25,11 +25,17 @@ import { nanoid } from "nanoid"
 import { promisify } from "util"
 import { cwd } from "process"
 import { join, resolve } from "path"
-import { readFileSync } from "fs"
+import { readFile, readFileSync } from "fs"
 
 const maxAge = 1 * 24 * 60 * 60
 const konvert = promisify(convert)
 
+interface ImageData {
+  _id: string
+  origColorCode: string
+  newColorCode: string
+  imageUri: string | undefined
+}
 const uploadImage = async ({
   binaryString,
   filePath,
@@ -41,7 +47,6 @@ const uploadImage = async ({
 }) => {
   const fileName = getFileName(filePath)
   const storageRef = ref(fbStorage, `/uploads/${id}/${fileName}`)
-  console.log(fileName)
   if (binaryString) {
     const bufString = Buffer.from(binaryString, "binary").toString("base64")
     await uploadString(storageRef, bufString, "base64", {
@@ -51,7 +56,7 @@ const uploadImage = async ({
   } else {
     console.log(fileName)
     // read file and upload?
-    await uploadBytes(storageRef, filePath)
+    readFile(filePath, (err, file) => uploadBytes(storageRef, file))
   }
 }
 
@@ -87,21 +92,20 @@ const randomizeLayersHandler = async (
    rarity: 'normal'
   }
   */
-  let randomizedUris = []
+  let randomizedUris = new Promise<ImageData[][]>((resolve, reject) => {})
+
   const IS_DEV = isDev()
-  const IM_TMP_PATH = IS_DEV ? "public/gallery" : join(cwd(), "files")
+  const IM_TMP_PATH = IS_DEV ? "convert" : join(cwd(), "files")
   let outputPath = "-"
   const { format } = query
 
-  // let newobj = {}
-
+  // const imageURIs: ImageData[] = []
   switch (method) {
     case "POST":
       if (!body) return res.status(400).send("You must write something")
       convert.path = IM_TMP_PATH
       console.log("inside im path", convert.path)
       // take each uri and convert them x times
-      const imageURIs: any[] = []
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item) {
           const colorCode = item[0]
@@ -116,36 +120,36 @@ const randomizeLayersHandler = async (
               const fileName = `${getFileName(
                 imageUri,
               )}_${colorCode}-${snakedColor}.png`
-              outputPath += `/${fileName}`
-              console.log("outputPath: " + outputPath)
+              if (format == "file") {
+                outputPath += `/${fileName}`
+              }
+              // console.log("outputPath: " + outputPath)
               try {
-                convert(
-                  [
+                return konvert([
+                  imageUri,
+                  "-fuzz",
+                  "90%",
+                  "-fill",
+                  randomColor,
+                  "-opaque",
+                  "#" + colorCode,
+                  outputPath,
+                ]).then(async (binString) => {
+                  // if (err) console.log("ERR: " + err.message)
+                  const imageUri = await uploadImage({
+                    binaryString: binString as BinaryType,
+                    id: _rid,
+                    filePath: outputPath,
+                  })
+                  const imageData = {
+                    _id: nanoid(),
+                    origColorCode: colorCode,
+                    newColorCode: snakedColor,
                     imageUri,
-                    "-fuzz",
-                    "90%",
-                    "-fill",
-                    randomColor,
-                    "-opaque",
-                    "#" + colorCode,
-                    outputPath,
-                  ],
-                  async (err, binString) => {
-                    if (err) console.log("ERR: " + err.message)
-                    const imageUri = await uploadImage({
-                      binaryString: binString as BinaryType,
-                      id: _rid,
-                      filePath: outputPath,
-                    })
-                    const imageData = {
-                      _id: nanoid(),
-                      origColorCode: colorCode,
-                      newColorCode: snakedColor,
-                      imageUri,
-                    }
-                    imageURIs.push(imageData)
-                  },
-                )
+                  }
+                  return imageData
+                  // imageURIs.push(imageData)
+                })
               } catch (error) {
                 console.error("APP ERROR: Konvert failure: " + error)
                 return error

@@ -169,7 +169,7 @@ function App() {
     console.log(metadata)
     //convert images but ideally recieve downloadURLs when finished...
     console.log("projectId", projectId && projectId)
-    const response = (await fetch(`/api/gen?format=file`, {
+    const response = (await fetch(`/api/gen`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -240,7 +240,7 @@ function App() {
                   type="number"
                   min={0}
                   max={100}
-                  step={10}
+                  step={5}
                   onChange={(ev) => setFuzzNum(Number(ev.target.value))}
                 />
                 <br />
@@ -277,6 +277,7 @@ function App() {
                 <FormLabel># of Colors</FormLabel>
                 <Input
                   type="number"
+                  placeholder={"1"}
                   min={1}
                   onChange={(e) => {
                     const newMeta = metadata
