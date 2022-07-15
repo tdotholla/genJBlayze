@@ -46,6 +46,7 @@ const uploadImage = async ({
   id: string
 }) => {
   const fileName = getFileName(filePath)
+  console.log(fileName)
   const storageRef = ref(fbStorage, `/uploads/${id}/${fileName}`)
   if (binaryString) {
     const bufString = Buffer.from(binaryString, "binary").toString("base64")
@@ -85,14 +86,15 @@ const randomizeLayersHandler = async (
   } = req
 
   /**
-   *   '000000': {
+   *   
+   '000000': {
    _id: 'nMLLdR6mjLAnDO-sxQtu-',
    depthNumber: 0,
    imageUri: 'https://storage.googleapis.com/shop-mocknstock.appspot.com/43ce5167-a478-4bc8-97ce-18dfa661e5bc.png-000000.png',
    rarity: 'normal'
   }
   */
-  let randomizedUris = new Promise<ImageData[][]>((resolve, reject) => {})
+  let randomizedUris = []
 
   const IS_DEV = isDev()
   const IM_TMP_PATH = IS_DEV ? "convert" : join(cwd(), "files")
@@ -123,9 +125,8 @@ const randomizeLayersHandler = async (
               if (format == "file") {
                 outputPath += `/${fileName}`
               }
-              // console.log("outputPath: " + outputPath)
               try {
-                return konvert([
+                return await konvert([
                   imageUri,
                   "-fuzz",
                   "90%",
@@ -139,7 +140,10 @@ const randomizeLayersHandler = async (
                   const imageUri = await uploadImage({
                     binaryString: binString as BinaryType,
                     id: _rid,
-                    filePath: outputPath,
+                    filePath:
+                      format !== "file" && outputPath == "-"
+                        ? fileName
+                        : outputPath,
                   })
                   const imageData = {
                     _id: nanoid(),
