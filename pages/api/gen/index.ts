@@ -38,16 +38,17 @@ interface ImageData {
 }
 const uploadImage = async ({
   binaryString,
+  artworkName,
   filePath,
   id,
 }: {
+  artworkName: string
   binaryString?: BinaryType
   filePath: string
   id: string
 }) => {
   const fileName = getFileName(filePath)
-  console.log(fileName)
-  const storageRef = ref(fbStorage, `/uploads/${id}/${fileName}`)
+  const storageRef = ref(fbStorage, `/uploads/${artworkName}/${id}/${fileName}`)
   if (binaryString) {
     const bufString = Buffer.from(binaryString, "binary").toString("base64")
     await uploadString(storageRef, bufString, "base64", {
@@ -55,7 +56,6 @@ const uploadImage = async ({
     })
     return await getDownloadURL(storageRef)
   } else {
-    console.log(fileName)
     // read file and upload?
     readFile(filePath, (err, file) => uploadBytes(storageRef, file))
   }
@@ -100,19 +100,20 @@ const randomizeLayersHandler = async (
   const IM_TMP_PATH = IS_DEV ? "convert" : join(cwd(), "tmp")
   let outputPath = "-"
   const { format } = query
+  const isFileFormat = format == "file"
+  const isTempOutput = outputPath == "-"
 
   // const imageURIs: ImageData[] = []
   switch (method) {
     case "POST":
       if (!body) return res.status(400).send("You must write something")
       convert.path = IM_TMP_PATH
-      console.log("inside im path", convert.path)
       // take each uri and convert them x times
       randomizedUris = Promise.all(
         Object.entries(body as ILayerData).map(async function (item) {
           const colorCode = item[0]
-          const { imageUri, colorVariety, _rid } = item[1]
-          if (format == "file") {
+          const { artworkName, imageUri, colorVariety, _rid } = item[1]
+          if (isFileFormat) {
             outputPath = IM_TMP_PATH
           }
           return await Promise.all(
@@ -122,10 +123,13 @@ const randomizeLayersHandler = async (
               const fileName = `${getFileName(
                 imageUri,
               )}_${colorCode}-${snakedColor}.png`
-              if (format == "file") {
+              if (isFileFormat) {
                 outputPath += `/${fileName}`
               }
               try {
+                console.log(
+                  `WRITING FILE TO${isTempOutput ? `STDOUT` : outputPath}...`,
+                )
                 return await konvert([
                   imageUri,
                   "-fuzz",
@@ -140,10 +144,9 @@ const randomizeLayersHandler = async (
                   const imageUri = await uploadImage({
                     binaryString: binString as BinaryType,
                     id: _rid,
+                    artworkName,
                     filePath:
-                      format !== "file" && outputPath == "-"
-                        ? fileName
-                        : outputPath,
+                      !isFileFormat && isTempOutput ? fileName : outputPath,
                   })
                   const imageData = {
                     _id: nanoid(),
@@ -151,7 +154,7 @@ const randomizeLayersHandler = async (
                     newColorCode: snakedColor,
                     imageUri,
                   }
-                  return imageData
+                  return await imageData
                   // imageURIs.push(imageData)
                 })
               } catch (error) {

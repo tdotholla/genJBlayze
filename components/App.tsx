@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react"
 import { nanoid } from "nanoid"
 import { BaseSyntheticEvent, useState } from "react"
-import { updateArtworkSet, storeImage } from "./db/firebase"
+import { updateArtworkInfo, storeImage } from "./db/firebase"
 import { ILayerData, IUploadedImage, IVarietyLeaf } from "./types"
 
 //get length
@@ -30,7 +30,7 @@ for (let index = 0; index < IMAGES.length; index++) {
 }
 
 function App() {
-  const [userArtwork, setUserArtwork] = useState(null)
+  const [userArtwork, setUserArtwork] = useState({} as File)
   // const [imageURI, setImageURI] = useState("")
   const [previewURI, setPreviewURI] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
@@ -46,12 +46,13 @@ function App() {
     if (userArtwork) {
       const imageUrl = await storeImage(userArtwork)
       setUploadStatus("UPLOADING DOCUMENT....")
-      const _id = await updateArtworkSet({ imageUrl })
+      const _id = await updateArtworkInfo({ imageUrl })
       const metadata: IUploadedImage = {
         _id,
         imageUrl,
         fuzz: `${fuzzNum}%`,
         numDominantColorsToExtract: 6,
+        artworkName: userArtwork.name.split(".")[0],
       }
       setProjectId(_id)
       setUploadStatus("GETTING LAYERS....")
@@ -64,7 +65,7 @@ function App() {
 
   const onFileInputChange = (e: BaseSyntheticEvent) => {
     setPreviewURI("")
-    setUserArtwork(null)
+    setUserArtwork({} as File)
     const file = e.target.files[0]
     setUserArtwork(file)
     const reader = new FileReader()
@@ -79,6 +80,7 @@ function App() {
   const getLayers = async ({
     _id, // original artwork/source id
     imageUrl,
+    artworkName,
     fuzz,
     numDominantColorsToExtract,
   }: IUploadedImage) => {
@@ -92,7 +94,6 @@ function App() {
       fuzz,
       numDominantColorsToExtract,
       isWhiteTransparent: true,
-      // filename
     }
 
     const response = await fetch(POST_URI, {
@@ -143,6 +144,7 @@ function App() {
         obj[response.dominantColors[i].hexCode] = {
           _id: nanoid(),
           _ogid: response.id,
+          artworkName,
           _rid: _id,
           depthNumber: i,
           imageUri: url,
@@ -158,7 +160,8 @@ function App() {
     )
     setArtworkLayers(response.urls)
     setMetaData(layerData)
-    projectId && (await updateArtworkSet({ _id: projectId, layers: layerData })) // use swr here
+    projectId &&
+      (await updateArtworkInfo({ _id: projectId, layers: layerData })) // use swr here
   }
   /**
    * sends an array of layer urls to server, receives and returns an array of objects containing metadata about each iteration, the source layer, etc.
@@ -196,7 +199,7 @@ function App() {
 
     console.info("::-RANDOMIZATION RESPONSE-::")
     console.log(response)
-    if (response.length > 0 && !response[0]) {
+    if (response.length > 0 && response[0]) {
       //response is an array or array of varieties, each with an array of varieties per layer
       response?.forEach((layer) => {
         const colorIndex = layer[0]?.origColorCode
@@ -205,7 +208,7 @@ function App() {
         }
       })
       //can i upload new stuff to layers and have it merge, or willi t overwrite layers:
-      updateArtworkSet({ _id: projectId, layers: metadata }) // use swr here
+      updateArtworkInfo({ _id: projectId, layers: metadata }) // use swr here
 
       //check status and get URLs for randomized images, then upload to db, display results in view?
       // then generate random images from layerImages
@@ -277,14 +280,12 @@ function App() {
                 <FormLabel># of Colors</FormLabel>
                 <Input
                   type="number"
-                  placeholder={"1"}
                   min={1}
                   onChange={(e) => {
                     const newMeta = metadata
+                    const val = e.currentTarget.value ?? "1"
                     Object.entries(newMeta).forEach((iteration) => {
-                      newMeta[iteration[0]].colorVariety = Number(
-                        e.currentTarget.value,
-                      )
+                      newMeta[iteration[0]].colorVariety = Number(val)
                     })
                     setMetaData(newMeta)
                   }}
