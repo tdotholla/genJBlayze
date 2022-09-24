@@ -36,7 +36,7 @@ const flattenLayersHandler = async (
 
       buildSetup()
       createFiles(editions)
-      createMetaData()
+      // createMetaData() // need to upload or update metadata?
       break
     case "GET":
       // const pullup = await insertPullUp(db, req.body.data)
