@@ -1153,6 +1153,11 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@imagemagick/magick-wasm@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@imagemagick/magick-wasm/-/magick-wasm-0.0.15.tgz#a506762e38d7ab837e5dee4e426e2d4235500278"
+  integrity sha512-RAfSO+kPak87rfbcg1UvmSWdbvsmlK7G64P3EabOFeoOfBdkZIluc7dCrLYPNohfEitnEZj3kNh+WtrvGFMo5w==
+
 "@jest/types@^26.6.2":
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-26.6.2.tgz#bef5a532030e1d88a2f5a6d933f84e97226ed48e"

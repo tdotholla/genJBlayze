@@ -12,6 +12,8 @@ import { convert } from "imagemagick"
 import { NextApiRequest, NextApiResponse } from "next"
 import { nanoid } from "nanoid"
 import { promisify } from "util"
+import { ImageMagick, initializeImageMagick } from "@imagemagick/magick-wasm"
+import { MagickFormat } from "@imagemagick/magick-wasm/magick-format"
 
 const maxAge = 1 * 24 * 60 * 60
 const konvert = promisify(convert)
@@ -100,22 +102,55 @@ const randomizeLayersHandler = async (
                 }
               }
               try {
-                return await konvert([
-                  imageUri,
-                  "-fuzz",
-                  "90%",
-                  "-fill",
-                  randomColor,
-                  "-opaque",
-                  "#" + colorCode,
-                  // filePath, // creates a file
-                  "-", // use stdout
-                ]).then(async (binString) => ({
-                  _id: nanoid(),
-                  origColorCode: colorCode,
-                  newColorCode: snakedColor,
-                  imageUri: await uploadImage(binString as BinaryType),
-                }))
+                /** does not work on vercel due to temp folder not being created (if stdout) or write permissions (if filePath) */
+                // return await konvert([
+                //   imageUri,
+                //   "-fuzz",
+                //   "90%",
+                //   "-fill",
+                //   randomColor,
+                //   "-opaque",
+                //   "#" + colorCode,
+                //   // filePath, // creates a file
+                //   "-", // use stdout
+                // ]).then(async (binString) => ({
+                //   _id: nanoid(),
+                //   origColorCode: colorCode,
+                //   newColorCode: snakedColor,
+                //   imageUri: await uploadImage(binString as BinaryType),
+                // }))
+                initializeImageMagick()
+                  .then(async () => {
+                    console.log("in test...")
+                    ImageMagick.read("logo:", (image) => {
+                      image.setAttribute("fuzz", "90%")
+                      console.log(image.colorFuzz.multiply(100))
+                      console.log(image.backgroundColor)
+                      // image.backgroundColor = console.log(image.backgroundColor)
+                      image.resize(100, 100)
+                      image.blur(1, 50)
+
+                      image.write((data) => {
+                        // console.log(data)
+                        writeFile(
+                          `${buildDir}/testfile.png`,
+                          data,
+                          "binary",
+                          (err) => {
+                            if (err) {
+                              console.error(err.message)
+                            } else {
+                              console.log("img written successfully")
+                            }
+                          },
+                        )
+                        console.log(data.length)
+                      }, MagickFormat.Jpeg)
+                    })
+                  })
+                  .catch((err) => {
+                    console.error(err)
+                  })
               } catch (error) {
                 console.error("APP ERROR: Konvert failure" + error)
               }
