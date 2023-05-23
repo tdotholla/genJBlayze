@@ -1,6 +1,23 @@
-# generative-art-node
 
+<!--- These are examples. See https://shields.io for others or to customize this set of shields. You might want to include dependencies, project status and license info here --->
+![Github License](https://img.shields.io/github/license/kiel-h-byrne/genJBlayze)
+![Node Version](https://img.shields.io/node/v/canary)
+
+![GitHub repo size](https://img.shields.io/github/repo-size/kiel-h-byrne/genJBlayze)
+![Github code size](https://img.shields.io/github/languages/code-size/kiel-h-byrne/genJBlayze)
+![Github Languages](https://img.shields.io/github/languages/count/kiel-h-byrne/genJBlayze)
+![Github Top Language](https://img.shields.io/github/languages/top/kiel-h-byrne/genJBlayze)
+
+![GitHub Issues](https://img.shields.io/github/issues-raw/kiel-h-byrne/genJBlayze)
+![GitHub contributors](https://img.shields.io/github/contributors/kiel-h-byrne/genJBlayze)
+![Github Last Commit](https://img.shields.io/github/last-commit/kiel-h-byrne/genJBlayze)
+
+# genBlayze
 Create generative art by using the canvas api and node js
+---
+
+
+---
 
 ![](https://github.com/tdotholla/genBlayze/blob/main/src/preview.png)
 ### [Visit](https://jusblayze.kielbyrne.com/)
