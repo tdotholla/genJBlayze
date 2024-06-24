@@ -1,6 +1,10 @@
 ## TODO: 
-need to upload an image (form upload)
-and spit out a url to said image. 
+1) Upload an image (artpiece)-> return a url for uploaded image
+2) send image to split by color -> return urls for multiple images by color
+3) perform iterations on each "layer"
+4) combine iterations for each layer to produce multiple images -> return urls for each image
+
+
 
 1. upload image (png/jpg, filled, not hollow) -> return url of image
 2. image is worked into multiple 'layers' (diff colors) -> return url of each image layer

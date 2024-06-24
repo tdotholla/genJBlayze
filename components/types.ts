@@ -17,6 +17,7 @@ export interface ILayerData {
     _id: string
     _ogid: string
     _rid: string
+    artworkName: string
     colorVariety: number
     depthNumber: number
     imageUri: string | undefined
@@ -56,6 +57,7 @@ export interface IUploadedImage {
   _id: string
   imageUrl: string | undefined
   dateTime?: string
+  artworkName: string
   fuzz?: string
   numDominantColorsToExtract?: number
   isWhiteTransparent?: boolean

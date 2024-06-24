@@ -29,10 +29,9 @@ export const fbStorage = getStorage(appRef)
 // useDeviceLanguage(getAuth())
 const uploadsRef = collection(fsdb, "UPLOADS")
 
-export const storeImage = async (
-  image: File,
-  path = `/uploads/${image.name}`,
-) => {
+export const storeImage = async (image: File, path?: string) => {
+  const stripped = image.name.split(".")[0]
+  path = path ?? `/uploads/${stripped}/${image.name}`
   if (image) {
     const storageRef = ref(fbStorage, path)
     await uploadBytes(storageRef, image, {})
@@ -41,7 +40,9 @@ export const storeImage = async (
   }
 }
 
-export const updateArtworkSet = async function (data: Partial<IUploadedImage>) {
+export const updateArtworkInfo = async function (
+  data: Partial<IUploadedImage>,
+) {
   const _id = data._id ?? nanoid()
   const dateTime = data.dateTime ?? new Date().toISOString()
   const origData = {
